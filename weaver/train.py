@@ -135,6 +135,14 @@ parser.add_argument('--backend', type=str, choices=['gloo', 'nccl', 'mpi'], defa
                     help='backend for distributed training')
 parser.add_argument('--cross-validation', type=str, default=None,
                     help='enable k-fold cross validation; input format: `variable_name%k`')
+parser.add_argument('--log-wandb', action='store_true', default=False,
+                    help='use wandb for loging')
+parser.add_argument('--wandb-displayname', type=str,
+                    help='give display name to wandb run, if not entered a random one is generated')
+parser.add_argument('--wandb-projectname', type=str,
+                    help='project where the run is stored inside wandb')
+parser.add_argument('--wandb-entity', type=str,
+                    help='username or team name where you are sending runs')
 
 
 def to_filelist(args, mode='train'):
@@ -724,6 +732,13 @@ def _main(args):
     orig_model = model
 
     if training_mode:
+        if args.log_wandb:
+            import wandb
+            from weaver.utils.logger_wandb import log_wandb_init
+            wandb.init(project=args.wandb_projectname, entity=args.wandb_entity)
+            wandb.run.name = args.wandb_displayname
+            log_wandb_init(args)
+
         model = orig_model.to(dev)
 
         # DistributedDataParallel
@@ -761,7 +776,7 @@ def _main(args):
             _logger.info('-' * 50)
             _logger.info('Epoch #%d training' % epoch)
             train(model, loss_func, opt, scheduler, train_loader, dev, epoch,
-                  steps_per_epoch=args.steps_per_epoch, grad_scaler=grad_scaler, tb_helper=tb)
+                  steps_per_epoch=args.steps_per_epoch, grad_scaler=grad_scaler, tb_helper=tb, logwandb = args.log_wandb)
             if args.model_prefix and (args.backend is None or local_rank == 0):
                 dirname = os.path.dirname(args.model_prefix)
                 if dirname and not os.path.exists(dirname):
@@ -776,7 +791,7 @@ def _main(args):
 
             _logger.info('Epoch #%d validating' % epoch)
             valid_metric = evaluate(model, val_loader, dev, epoch, loss_func=loss_func,
-                                    steps_per_epoch=args.steps_per_epoch_val, tb_helper=tb)
+                                    steps_per_epoch=args.steps_per_epoch_val, tb_helper=tb, logwandb = args.log_wandb)
             is_best_epoch = (
                 valid_metric < best_valid_metric) if args.regression_mode else(
                 valid_metric > best_valid_metric)
