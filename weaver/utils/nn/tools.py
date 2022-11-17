@@ -213,8 +213,10 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     metric_results = evaluate_metrics(labels[data_config.label_names[0]], scores, eval_metrics=eval_metrics)
 
     if logwandb:
-        from ..logger_wandb import log_confussion_matrix_wandb
+        from ..logger_wandb import log_confussion_matrix_wandb, log_roc_curves
         log_confussion_matrix_wandb(labels[data_config.label_names[0]], scores, epoch)
+        log_roc_curves(labels[data_config.label_names[0]], scores, epoch)
+        
     _logger.info('Evaluation metrics: \n%s', '\n'.join(
         ['    - %s: \n%s' % (k, str(v)) for k, v in metric_results.items()]))
 
