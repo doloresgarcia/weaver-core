@@ -3,11 +3,11 @@ import awkward as ak
 import tqdm
 import time
 import torch
-
 from collections import defaultdict, Counter
 from .metrics import evaluate_metrics
 from ..data.tools import _concat
 from ..logger import _logger
+
 
 
 def _flatten_label(label, mask=None):
@@ -30,7 +30,8 @@ def _flatten_preds(preds, mask=None, label_axis=1):
     return preds
 
 
-def train_classification(model, loss_func, opt, scheduler, train_loader, dev, epoch, steps_per_epoch=None, grad_scaler=None, tb_helper=None):
+def train_classification(model, loss_func, opt, scheduler, train_loader, dev, epoch, 
+                         steps_per_epoch=None, grad_scaler=None, tb_helper=None, logwandb=False):
     model.train()
 
     data_config = train_loader.dataset.config
@@ -93,6 +94,10 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
                 if tb_helper.custom_fn:
                     with torch.no_grad():
                         tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches, mode='train')
+            
+            if logwandb:
+                import wandb
+                wandb.log({"loss classification": loss})
 
             if steps_per_epoch is not None and num_batches >= steps_per_epoch:
                 break
@@ -119,7 +124,8 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
 
 def evaluate_classification(model, test_loader, dev, epoch, for_training=True, loss_func=None, steps_per_epoch=None,
                             eval_metrics=['roc_auc_score', 'roc_auc_score_matrix', 'confusion_matrix'],
-                            tb_helper=None):
+                            tb_helper=None, 
+                            logwandb=False):
     model.eval()
 
     data_config = test_loader.dataset.config
@@ -181,6 +187,9 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
                         with torch.no_grad():
                             tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches,
                                                 mode='eval' if for_training else 'test')
+                if logwandb:
+                    import wandb
+                    wandb.log({"loss val classification": loss})
 
                 if steps_per_epoch is not None and num_batches >= steps_per_epoch:
                     break
@@ -202,6 +211,10 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     scores = np.concatenate(scores)
     labels = {k: _concat(v) for k, v in labels.items()}
     metric_results = evaluate_metrics(labels[data_config.label_names[0]], scores, eval_metrics=eval_metrics)
+
+    if logwandb:
+        from ..logger_wandb import log_confussion_matrix_wandb
+        log_confussion_matrix_wandb(labels[data_config.label_names[0]], scores, epoch)
     _logger.info('Evaluation metrics: \n%s', '\n'.join(
         ['    - %s: \n%s' % (k, str(v)) for k, v in metric_results.items()]))
 
@@ -273,7 +286,8 @@ def evaluate_onnx(model_path, test_loader, eval_metrics=['roc_auc_score', 'roc_a
     return total_correct / count, scores, labels, observers
 
 
-def train_regression(model, loss_func, opt, scheduler, train_loader, dev, epoch, steps_per_epoch=None, grad_scaler=None, tb_helper=None):
+def train_regression(model, loss_func, opt, scheduler, train_loader, dev, epoch, 
+                     steps_per_epoch=None, grad_scaler=None, tb_helper=None, logwandb=False):
     model.train()
 
     data_config = train_loader.dataset.config
@@ -336,6 +350,10 @@ def train_regression(model, loss_func, opt, scheduler, train_loader, dev, epoch,
                 if tb_helper.custom_fn:
                     with torch.no_grad():
                         tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches, mode='train')
+            
+            if logwandb:
+                import wandb
+                wandb.log({"loss regression": loss})
 
             if steps_per_epoch is not None and num_batches >= steps_per_epoch:
                 break
@@ -364,7 +382,8 @@ def train_regression(model, loss_func, opt, scheduler, train_loader, dev, epoch,
 def evaluate_regression(model, test_loader, dev, epoch, for_training=True, loss_func=None, steps_per_epoch=None,
                         eval_metrics=['mean_squared_error', 'mean_absolute_error', 'median_absolute_error',
                                       'mean_gamma_deviance'],
-                        tb_helper=None):
+                        tb_helper=None, 
+                        logwandb=False):
     model.eval()
 
     data_config = test_loader.dataset.config
@@ -421,6 +440,9 @@ def evaluate_regression(model, test_loader, dev, epoch, for_training=True, loss_
                             tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches,
                                                 mode='eval' if for_training else 'test')
 
+                if logwandb:
+                    wandb.log({"loss val regression": loss})
+                    
                 if steps_per_epoch is not None and num_batches >= steps_per_epoch:
                     break
 
