@@ -95,7 +95,7 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
                     with torch.no_grad():
                         tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches, mode='train')
             
-            if logwandb:
+            if logwandb and (num_batches % 50):
                 import wandb
                 wandb.log({"loss classification": loss})
 
@@ -214,8 +214,14 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
 
     if logwandb:
         from ..logger_wandb import log_confussion_matrix_wandb, log_roc_curves
-        log_confussion_matrix_wandb(labels[data_config.label_names[0]], scores, epoch)
-        log_roc_curves(labels[data_config.label_names[0]], scores, epoch)
+        y_true_wandb = labels[data_config.label_names[0]]
+        scores_wandb = scores
+        if len(y_true_wandb)>2000:
+            scores_wandb = scores_wandb[0:2000]
+            y_true_wandb = y_true_wandb[0:2000]
+
+        log_confussion_matrix_wandb(y_true_wandb, scores_wandb, epoch)
+        log_roc_curves(y_true_wandb, scores_wandb, epoch)
         
     _logger.info('Evaluation metrics: \n%s', '\n'.join(
         ['    - %s: \n%s' % (k, str(v)) for k, v in metric_results.items()]))
