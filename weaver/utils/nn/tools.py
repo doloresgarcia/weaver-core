@@ -107,6 +107,10 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
     _logger.info('Train AvgLoss: %.5f, AvgAcc: %.5f' % (total_loss / num_batches, total_correct / count))
     _logger.info('Train class distribution: \n    %s', str(sorted(label_counter.items())))
 
+    if logwandb:
+        wandb.log({"loss_epoch_end": total_loss / num_batches})
+        wandb.log({"acc_epoch_end": total_correct / count})
+
     if tb_helper:
         tb_helper.write_scalars([
             ("Loss/train (epoch)", total_loss / num_batches, epoch),
@@ -197,7 +201,11 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     time_diff = time.time() - start_time
     _logger.info('Processed %d entries in total (avg. speed %.1f entries/s)' % (count, count / time_diff))
     _logger.info('Evaluation class distribution: \n    %s', str(sorted(label_counter.items())))
-
+    
+    if logwandb:
+        wandb.log({"loss_epoch_end_val": total_loss / num_batches})
+        wandb.log({"acc_epoch_end_val": total_correct / count})
+        
     if tb_helper:
         tb_mode = 'eval' if for_training else 'test'
         tb_helper.write_scalars([
