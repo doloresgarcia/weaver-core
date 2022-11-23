@@ -49,7 +49,7 @@ def log_roc_curves(y_true, y_score, epoch):
         columns = ['b vs g', 'b vs ud', 'b vs c']
         xs = [_bg[1], _bud[1], _bc[1]]
         ys = [_bg[0], _bud[0], _bc[0]]
-        auc_ = [_bc[2], _bud[2], _bc[2]]
+        auc_ = [_bg[2], _bud[2], _bc[2]]
         title_log = "roc b"
         title_plot = "b tagging"
         wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
@@ -189,6 +189,6 @@ def calculate_and_log_tpr_1_10_percent(fpr,tpr, name_pos, name_neg):
     tpr_10_percent = tpr[idx_10_percent]
     tpr_1_percent = tpr[idx_1_percent]
 
-    name_10 = "tageff/"+ name_pos + "-tagging eff-10%-" + name_neg + "misstag rate"
-    name_1 = "tageff/"+ name_pos + "-tagging eff-1%" + name_neg + "misstag rate"
+    name_10 = "te/"+ name_pos + "_vs_" + name_neg + "_10%"
+    name_1 = "te/"+ name_pos + "_vs_" + name_neg + "_1%"
     wandb.log({name_10: tpr_10_percent, name_1: tpr_1_percent})
