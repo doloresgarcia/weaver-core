@@ -203,7 +203,7 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     _logger.info('Evaluation class distribution: \n    %s', str(sorted(label_counter.items())))
     
     if logwandb:
-        wandb.log({"loss_epoch_end_val": total_loss / num_batches})
+        wandb.log({"loss_epoch_end_val": total_loss / count})
         wandb.log({"acc_epoch_end_val": total_correct / count})
         
     if tb_helper:
