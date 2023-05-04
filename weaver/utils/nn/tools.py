@@ -31,7 +31,8 @@ def _flatten_preds(preds, mask=None, label_axis=1):
 
 
 def train_classification(model, loss_func, opt, scheduler, train_loader, dev, epoch, 
-                         steps_per_epoch=None, grad_scaler=None, tb_helper=None, logwandb=False):
+                         steps_per_epoch=None, grad_scaler=None, tb_helper=None, logwandb=False, local_rank=0,
+                         args=None):
     model.train()
 
     data_config = train_loader.dataset.config
@@ -68,7 +69,15 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
                 grad_scaler.update()
 
             if scheduler and getattr(scheduler, '_update_per_step', False):
-                scheduler.step()
+                if args.lr_scheduler == "reduceplateau":
+                    scheduler.step(total_loss / num_batches)  # loss
+                else:
+                    scheduler.step()  # loss
+                if logwandb and local_rank == 0:
+                    if args.lr_scheduler == "reduceplateau":
+                        wandb.log({"lr": opt.param_groups[0]["lr"]})
+                    else:
+                        wandb.log({"lr": scheduler.get_last_lr()[0]})
 
             _, preds = logits.max(1)
             loss = loss.item()
@@ -80,7 +89,7 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
             total_correct += correct
 
             tq.set_postfix({
-                'lr': '%.2e' % scheduler.get_last_lr()[0] if scheduler else opt.defaults['lr'],
+                #'lr': '%.2e' % scheduler.get_last_lr()[0] if scheduler else opt.defaults['lr'],
                 'Loss': '%.5f' % loss,
                 'AvgLoss': '%.5f' % (total_loss / num_batches),
                 'Acc': '%.5f' % (correct / num_examples),
@@ -95,7 +104,7 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
                     with torch.no_grad():
                         tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches, mode='train')
             
-            if logwandb and (num_batches % 50):
+            if logwandb and (num_batches % 50) and local_rank == 0:
                 import wandb
                 wandb.log({"loss classification": loss})
 
@@ -107,7 +116,7 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
     _logger.info('Train AvgLoss: %.5f, AvgAcc: %.5f' % (total_loss / num_batches, total_correct / count))
     _logger.info('Train class distribution: \n    %s', str(sorted(label_counter.items())))
 
-    if logwandb:
+    if (local_rank == 0) and logwandb:
         wandb.log({"loss_epoch_end": total_loss / num_batches})
         wandb.log({"acc_epoch_end": total_correct / count})
 
@@ -123,13 +132,22 @@ def train_classification(model, loss_func, opt, scheduler, train_loader, dev, ep
         tb_helper.batch_train_count += num_batches
 
     if scheduler and not getattr(scheduler, '_update_per_step', False):
-        scheduler.step()
+        if args.lr_scheduler == "reduceplateau":
+            scheduler.step(total_loss / num_batches)  # loss
+        else:
+            scheduler.step()  # loss
+        if logwandb and local_rank == 0:
+            if args.lr_scheduler == "reduceplateau":
+                wandb.log({"lr": opt.param_groups[0]["lr"]})
+            else:
+                wandb.log({"lr": scheduler.get_last_lr()[0]})
 
 
 def evaluate_classification(model, test_loader, dev, epoch, for_training=True, loss_func=None, steps_per_epoch=None,
                             eval_metrics=['roc_auc_score', 'roc_auc_score_matrix', 'confusion_matrix'],
                             tb_helper=None, 
-                            logwandb=False):
+                            logwandb=False, 
+                            local_rank=0):
     model.eval()
 
     data_config = test_loader.dataset.config
@@ -141,6 +159,8 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     entry_count = 0
     count = 0
     scores = []
+    if logwandb:
+        counts_particles = []
     labels = defaultdict(list)
     labels_counts = []
     observers = defaultdict(list)
@@ -165,6 +185,13 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
                 logits = _flatten_preds(model_output, label_mask).float()
 
                 scores.append(torch.softmax(logits, dim=1).detach().cpu().numpy())
+                if logwandb:
+                    mask = inputs[3].detach().cpu()
+                    mask = torch.permute(mask,(0,2,1))
+                    mask = torch.reshape(torch.sum(mask,1),[-1]).numpy()
+                    counts_particles.append(mask)
+                    print('mask',mask.shape)
+
                 for k, v in y.items():
                     labels[k].append(_flatten_label(v, label_mask).cpu().numpy())
                 if not for_training:
@@ -191,7 +218,7 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
                         with torch.no_grad():
                             tb_helper.custom_fn(model_output=model_output, model=model, epoch=epoch, i_batch=num_batches,
                                                 mode='eval' if for_training else 'test')
-                if logwandb:
+                if logwandb and local_rank == 0:
                     import wandb
                     wandb.log({"loss val classification": loss})
 
@@ -202,7 +229,7 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     _logger.info('Processed %d entries in total (avg. speed %.1f entries/s)' % (count, count / time_diff))
     _logger.info('Evaluation class distribution: \n    %s', str(sorted(label_counter.items())))
     
-    if logwandb:
+    if logwandb and local_rank == 0:
         wandb.log({"loss_epoch_end_val": total_loss / count})
         wandb.log({"acc_epoch_end_val": total_correct / count})
         
@@ -220,16 +247,20 @@ def evaluate_classification(model, test_loader, dev, epoch, for_training=True, l
     labels = {k: _concat(v) for k, v in labels.items()}
     metric_results = evaluate_metrics(labels[data_config.label_names[0]], scores, eval_metrics=eval_metrics)
 
-    if logwandb:
-        from ..logger_wandb import log_confussion_matrix_wandb, log_roc_curves
+    if logwandb and local_rank == 0: 
+        counts_particles = np.concatenate(counts_particles)
+        from ..logger_wandb import log_confussion_matrix_wandb, log_roc_curves, log_histograms
         y_true_wandb = labels[data_config.label_names[0]]
         scores_wandb = scores
-        if len(y_true_wandb)>2000:
-            scores_wandb = scores_wandb[0:2000]
-            y_true_wandb = y_true_wandb[0:2000]
+        if len(y_true_wandb)>10000:
+            scores_wandb = scores_wandb[0:10000]
+            y_true_wandb = y_true_wandb[0:10000]
+            counts_particles = counts_particles[0:10000]
 
         log_confussion_matrix_wandb(y_true_wandb, scores_wandb, epoch)
         log_roc_curves(y_true_wandb, scores_wandb, epoch)
+        print('logging HISTOGRAMS')
+        log_histograms(y_true_wandb, scores_wandb, counts_particles, epoch)
         
     _logger.info('Evaluation metrics: \n%s', '\n'.join(
         ['    - %s: \n%s' % (k, str(v)) for k, v in metric_results.items()]))
@@ -348,7 +379,7 @@ def train_regression(model, loss_func, opt, scheduler, train_loader, dev, epoch,
             sum_sqr_err += sqr_err
 
             tq.set_postfix({
-                'lr': '%.2e' % scheduler.get_last_lr()[0] if scheduler else opt.defaults['lr'],
+                #'lr': '%.2e' % scheduler.get_last_lr()[0] if scheduler else opt.defaults['lr'],
                 'Loss': '%.5f' % loss,
                 'AvgLoss': '%.5f' % (total_loss / num_batches),
                 'MSE': '%.5f' % (sqr_err / num_examples),

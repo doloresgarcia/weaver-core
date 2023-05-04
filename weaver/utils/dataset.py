@@ -13,6 +13,8 @@ from .data.fileio import _read_files
 from .data.config import DataConfig, _md5
 from .data.preprocess import _apply_selection, _build_new_variables, _build_weights, AutoStandardizer, WeightMaker
 
+import sys
+#from weaver.nn.model.layers.graph import  graph_return_knnij
 
 def _finalize_inputs(table, data_config):
     output = {}
@@ -256,13 +258,20 @@ class _SimpleIter(object):
         self.ipos += self._fetch_step
 
     def get_data(self, i):
+        graphs = True
         # inputs
         X = {k: self.table['_' + k][i].copy() for k in self._data_config.input_names}
         # labels
         y = {k: self.table[k][i].copy() for k in self._data_config.label_names}
         # observers / monitor variables
         Z = {k: self.table[k][i].copy() for k in self._data_config.z_variables}
-        return X, y, Z
+
+        #if graphs:
+        #    output = [graph_return_knnij(X,y), y['_label_']]
+        #else:
+        output = X, y, Z
+
+        return output
 
 
 class SimpleIterDataset(torch.utils.data.IterableDataset):

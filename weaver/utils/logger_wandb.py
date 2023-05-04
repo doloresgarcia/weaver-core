@@ -40,39 +40,41 @@ def log_roc_curves(y_true, y_score, epoch):
     print('EPOCH', epoch, y_true.shape, y_score.shape)
     _bg = create_binary_rocs(4, 0, y_true, y_score)
     _bud  = create_binary_rocs(4, 1, y_true, y_score)
+    _bd  = create_binary_rocs(4, 6, y_true, y_score)
     _bc = create_binary_rocs(4, 3, y_true, y_score)
     if len(_bg)>0 and len(_bud)>0 and len(_bc)>0:
         # this if checks if all elements are not of the same class
         calculate_and_log_tpr_1_10_percent(_bg[0],_bg[1], "b", "g")
         calculate_and_log_tpr_1_10_percent(_bud[0],_bud[1], "b", "ud")
         calculate_and_log_tpr_1_10_percent(_bc[0],_bc[1], "b", "c")
-        columns = ['b vs g', 'b vs ud', 'b vs c']
-        xs = [_bg[1], _bud[1], _bc[1]]
-        ys = [_bg[0], _bud[0], _bc[0]]
-        auc_ = [_bg[2], _bud[2], _bc[2]]
+        columns = ['b vs g', 'b vs ud', 'b vs d','b vs c']
+        xs = [_bg[1], _bud[1],_bd[1], _bc[1]]
+        ys = [_bg[0], _bud[0],_bd[0], _bc[0]]
+        auc_ = [_bg[2], _bud[2],_bd[2], _bc[2]]
         title_log = "roc b"
         title_plot = "b tagging"
         wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
-        wandb_log_auc(auc_, ["b_g", "b_ud", "b_c"])
+        wandb_log_auc(auc_, ["b_g", "b_ud","b_d", "b_c"])
     else:
         print('all batch from the same class in b',len(_bg),len(_bud),len(_bc))
 
     # c tagging (c/g, c/ud, c/b)
     _cg = create_binary_rocs(3, 0, y_true, y_score)
     _cud = create_binary_rocs(3, 1, y_true, y_score)
+    _cd  = create_binary_rocs(4, 6, y_true, y_score)
     _cb = create_binary_rocs(3, 4, y_true, y_score)
     if len(_cg)>0 and len(_cud)>0 and len(_cb)>0:
         calculate_and_log_tpr_1_10_percent(_cg[0], _cg[1], "c", "g")
         calculate_and_log_tpr_1_10_percent(_cud[0], _cud[1], "c", "ud")
         calculate_and_log_tpr_1_10_percent(_cb[0],_cb[1], "c", "b")
-        columns = ['c vs g', 'c vs ud', 'c vs b']
-        xs = [_cg[1], _cud[1], _cb[1]]
-        ys = [_cg[0], _cud[0], _cb[0]]
-        auc_ = [_cg[2], _cud[2], _cb[2]]
+        columns = ['c vs g', 'c vs ud','c vs d', 'c vs b']
+        xs = [_cg[1], _cud[1],_cd[1], _cb[1]]
+        ys = [_cg[0], _cud[0],_cd[0], _cb[0]]
+        auc_ = [_cg[2], _cud[2], _cd[2], _cb[2]]
         title_log = "roc c"
         title_plot = "c tagging"
         wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
-        wandb_log_auc(auc_, ["c_g", "c_ud", "c_b"])
+        wandb_log_auc(auc_, ["c_g", "c_ud","c_d", "c_b"])
     else:
         print('all batch from the same class in c',len(_cg) ,len(_cud), len(_cb))
 
@@ -80,6 +82,7 @@ def log_roc_curves(y_true, y_score, epoch):
 
     _sg = create_binary_rocs(2, 0, y_true, y_score)
     _sud = create_binary_rocs(2, 1, y_true, y_score)
+    _sd  = create_binary_rocs(4, 6, y_true, y_score)
     _sc  = create_binary_rocs(2, 3, y_true, y_score)
     _sb  = create_binary_rocs(2, 4, y_true, y_score)
     if len(_sg)>0 and len(_sud)>0 and len(_sc)>0 and len(_sb)>0:
@@ -87,19 +90,20 @@ def log_roc_curves(y_true, y_score, epoch):
         calculate_and_log_tpr_1_10_percent(_sud[0],_sud[1], "s", "ud")
         calculate_and_log_tpr_1_10_percent(_sc[0],_sc[1], "s", "c")
         calculate_and_log_tpr_1_10_percent(_sb[0],_sb[1], "s", "b")
-        columns = ['s vs g', 's vs ud', 's vs c', 's vs b']
-        xs = [_sg[1], _sud[1], _sc[1], _sb[1]]
-        ys = [_sg[0], _sud[0], _sc[0], _sb[0]]
-        auc_ = [_sg[2], _sud[2], _sb[2]]
+        columns = ['s vs g', 's vs ud','s vs d', 's vs c', 's vs b']
+        xs = [_sg[1], _sud[1],_sd[1], _sc[1], _sb[1]]
+        ys = [_sg[0], _sud[0], _sd[0],_sc[0], _sb[0]]
+        auc_ = [_sg[2], _sud[2],_sd[2],_sc[2], _sb[2]]
         title_log = "roc s"
         title_plot = "s tagging"
         wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
-        wandb_log_auc(auc_, ["s_g", "s_ud", "s_c", "s_b"])
+        wandb_log_auc(auc_, ["s_g", "s_ud","s_d", "s_c", "s_b"])
     else:
         print('all batch from the same class in s',len(_sg),len(_sud),len(_sc), len(_sb))
 
     # g tagging (g/ud, g/s, g/c, g/b)
     _gud  = create_binary_rocs(0, 1, y_true, y_score)
+    _gd  = create_binary_rocs(4, 6, y_true, y_score)
     _gs  = create_binary_rocs(0, 2, y_true, y_score)
     _gc  = create_binary_rocs(0, 3, y_true, y_score)
     _gb  = create_binary_rocs(0, 4, y_true, y_score)
@@ -108,19 +112,61 @@ def log_roc_curves(y_true, y_score, epoch):
         calculate_and_log_tpr_1_10_percent(_gs[0],_gs[1], "g", "s")
         calculate_and_log_tpr_1_10_percent(_gc[0],_gc[1], "g", "c")
         calculate_and_log_tpr_1_10_percent(_gb[0],_gb[1], "g", "b")
-        columns = ['g vs ud', 'g vs s', 'g vs c', 'g vs b']
-        xs = [_gud[1], _gs[1], _gc[1], _gb[1]]
-        ys = [_gud[0], _gs[0], _gc[0], _gb[0]]
-        auc_ = [_gud[2], _gs[2], _gc[2], _gb[2]]
+        columns = ['g vs ud', 'g vs s', 'g vs c', 'g vs d', 'g vs b']
+        xs = [_gud[1], _gs[1], _gc[1],_gd[1], _gb[1]]
+        ys = [_gud[0], _gs[0], _gc[0],_gd[0], _gb[0]]
+        auc_ = [_gud[2], _gs[2], _gc[2],_gd[2], _gb[2]]
         title_log = "roc g"
         title_plot = "g tagging"
         wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
-        wandb_log_auc(auc_, ["g_ud", "g_s", "g_c", "g_b"])
+        wandb_log_auc(auc_, ["g_ud", "g_s", "g_c","g_d", "g_b"])
     else:
         print('all batch from the same class in g',len(_gud),len(_gs),len(_gc),len(_gb))
+
+
+    _tauud  = create_binary_rocs(5, 1, y_true, y_score)
+    _taud  = create_binary_rocs(4, 6, y_true, y_score)
+    _taus  = create_binary_rocs(5, 2, y_true, y_score)
+    _tauc  = create_binary_rocs(5, 3, y_true, y_score)
+    _taub  = create_binary_rocs(5, 4, y_true, y_score)
+    _taug  = create_binary_rocs(5, 0, y_true, y_score)
+    if len(_tauud)>0 and len(_taus)>0 and len(_tauc)>0 and len(_gb)>0 and len(_taug)>0:
+        calculate_and_log_tpr_1_10_percent(_tauud[0],_tauud[1], "tau", "ud")
+        calculate_and_log_tpr_1_10_percent(_taus[0],_taus[1], "tau", "s")
+        calculate_and_log_tpr_1_10_percent(_tauc[0],_tauc[1], "tau", "c")
+        calculate_and_log_tpr_1_10_percent(_taub[0],_taub[1], "tau", "b")
+        calculate_and_log_tpr_1_10_percent(_taub[0],_taub[1], "tau", "g")
+        calculate_and_log_tpr_1_10_percent(_taug[0],_taug[1], "tau", "g")
+        columns = ['tau vs ud','tau vs d', 'tau vs s', 'tau vs c', 'tau vs b','tau vs g']
+        xs = [_tauud[1],_taud[1], _taus[1], _tauc[1], _taub[1],_taug[1]]
+        ys = [_tauud[0],_taud[0], _taus[0], _tauc[0], _taub[0],_taug[0]]
+        auc_ = [_tauud[2],_taud[2], _taus[2], _tauc[2], _taub[2],_taug[2]]
+        title_log = "roc tau"
+        title_plot = "tau tagging"
+        wandb_log_multiline_rocs(xs, ys, title_log, title_plot, columns)
+        wandb_log_auc(auc_, ["tau_ud","tau_d", "tau_s", "tau_c", "tau_b","tau_g"])
+    else:
+        print('all batch from the same class in tau',len(_tauud),len(_tauc),len(_taub),len(_taug))
     
     
 #def tagging_at_xpercent_misstag():
+
+def log_histograms(y_true_wandb, scores_wandb, counts_particles, epoch):
+    print('logging hist func')
+    y_pred = np.argmax(scores_wandb,axis=1)
+    errors_class_examples = y_true_wandb != y_pred
+    correct_class_examples = y_true_wandb == y_pred
+    errors_number_count = counts_particles[errors_class_examples]  
+    correct_number_count = counts_particles[correct_class_examples] 
+    print('count',errors_number_count.shape,correct_number_count.shape)
+    data_correct = [[i,correct_number_count[i]] for i in range(0,len(correct_number_count))]
+    data_errors = [[i,errors_number_count[i]] for i in range(0,len(errors_number_count))]
+    table_correct = wandb.Table(data=data_correct, columns=["IDs","correct_number_count"])
+    table_errors = wandb.Table(data=data_errors, columns=["IDs","errors_number_count"])
+    
+    wandb.log({'hist_errors_count': wandb.Histogram(errors_number_count)}) 
+    # wandb.log({'hist_errors_count': wandb.plot.histogram(table_errors, "errors_number_count",
+                           #title="Histogram errors number const")}) 
 
 
 def wandb_log_auc(auc_, names ):
@@ -150,8 +196,8 @@ def find_nearest(a, a0):
 
 def create_binary_rocs(positive, negative, y_true, y_score):
     mask_positive = y_true==positive
-    mask_negative = y_true==negative 
-    print(y_true.shape, np.sum(mask_positive),  np.sum(mask_negative), positive, negative)
+    mask_negative = y_true==negative
+    #print(y_true.shape, np.sum(mask_positive),  np.sum(mask_negative), positive, negative)
     number_positive = len(y_true[mask_positive])
     number_negative = len(y_true[mask_negative])
     if number_positive>0 and number_negative>0:
