@@ -12,6 +12,18 @@ def knn(x, k):
     idx = pairwise_distance.topk(k=k + 1, dim=-1)[1][:, :, 1:]  # (batch_size, num_points, k)
     return idx
 
+def knn_wrapped(x,k):
+    points_t  = x.transpose(2, 1)
+    points_t1 = torch.unsqueeze(points_t,2).repeat([1,1,75,1])
+    points_t2 = torch.unsqueeze(points_t,1).repeat([1,75,1,1],1)
+    mask_phi_max = points_t1[:,:,:,1]-points_t2[:,:,:,1]
+    dif_max_phi = (mask_phi_max<-np.pi)*(mask_phi_max+np.pi*2)+(mask_phi_max>np.pi)*(mask_phi_max-np.pi*2)+(-np.pi<=mask_phi_max)*(mask_phi_max<=np.pi)*(mask_phi_max)
+    dif_max_phi = torch.abs(dif_max_phi)
+
+    mask_theta_max = torch.abs(points_t1[:,:,:,0]-points_t2[:,:,:,0])
+    pairwise_distance = torch.square(dif_max_phi)+torch.square(mask_theta_max)
+    idx_wrapped = pairwise_distance.topk(k=k + 1, dim=-1,largest=False)[1][:, :, 1:] 
+    return idx_wrapped
 
 # v1 is faster on GPU
 def get_graph_feature_v1(x, k, idx):
@@ -25,7 +37,7 @@ def get_graph_feature_v1(x, k, idx):
     fts = fts[idx, :].view(batch_size, num_points, k, num_dims)  # neighbors: -> (batch_size*num_points*k, num_dims) -> ...
     fts = fts.permute(0, 3, 1, 2).contiguous()  # (batch_size, num_dims, num_points, k)
     x = x.view(batch_size, num_dims, num_points, 1).repeat(1, 1, 1, k)
-    fts = torch.cat((x, fts - x), dim=1)  # ->(batch_size, 2*num_dims, num_points, k)
+    fts = torch.cat((x, fts - x), dim=1)  # ->(batch_size, 2*num_dims, num_points, k)  #test taking out sum and self loops
     return fts
 
 
@@ -98,7 +110,7 @@ class EdgeConvBlock(nn.Module):
 
     def forward(self, points, features):
 
-        topk_indices = knn(points, self.k)
+        topk_indices = knn_wrapped(points, self.k)
         x = self.get_graph_feature(features, self.k, topk_indices)
 
         for conv, bn, act in zip(self.convs, self.bns, self.acts):
@@ -109,6 +121,8 @@ class EdgeConvBlock(nn.Module):
                 x = act(x)
 
         fts = x.mean(dim=-1)  # (N, C, P)
+        #fts = bn(fts)
+        #fts = act(fts)
 
         # shortcut
         if self.sc:
