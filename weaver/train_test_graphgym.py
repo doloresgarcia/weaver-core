@@ -3,7 +3,6 @@
 import os
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
 import ast
 import sys
 import shutil
