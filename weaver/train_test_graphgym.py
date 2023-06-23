@@ -171,7 +171,9 @@ def _main(args):
         if args.backend is None:
             if gpus is not None and len(gpus) > 1:
                 # model becomes `torch.nn.DataParallel` w/ model.module being the original `torch.nn.Module`
-                model = torch.nn.DataParallel(model, device_ids=gpus)
+                model = torch.nn.DataParallel(
+                    model, device_ids == [0, 1, 2, 3]
+                )  # gpus)
             # model = model.to(dev)
 
         # lr finder: keep it after all other setups
