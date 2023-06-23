@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
 import ast
@@ -30,6 +31,15 @@ from weaver.utils.trainer_utils import (
     profile,
     optim,
 )
+import weaver.nn.model.graphgps
+import torch_geometric.graphgym.register as register
+from torch_geometric.graphgym.config import (
+    cfg,
+    dump_cfg,
+    set_cfg,
+    load_cfg,
+    makedirs_rm_exist,
+)
 
 
 def _main(args):
@@ -51,8 +61,8 @@ def _main(args):
         from weaver.utils.nn.tools import train_regression as train
         from weaver.utils.nn.tools import evaluate_regression as evaluate
     elif args.graphs:
-        from weaver.utils.nn.tools_san import train_classification as train
-        from weaver.utils.nn.tools_san import evaluate_classification as evaluate
+        from weaver.utils.nn.tools_graphs import train_classification as train
+        from weaver.utils.nn.tools_graphs import evaluate_classification as evaluate
     else:
         _logger.info("Running in classification mode")
         from weaver.utils.nn.tools import train_classification as train
@@ -81,6 +91,12 @@ def _main(args):
         dev = torch.device("cpu")
         local_rank = 0
 
+    ####################### SETTING CFG
+    print(args.cfg_file)
+    set_cfg(cfg)
+
+    load_cfg(cfg, args)
+    print("CFG GT LAYERS", cfg.gt.layers)
     # load data
     if training_mode:
         (
@@ -100,7 +116,7 @@ def _main(args):
         iotest(args, data_loader)
         return
 
-    model, model_info, loss_func = model_setup(args, data_config)
+    model, model_info, loss_func = model_setup(args, data_config, cfg)
 
     # TODO: load checkpoint
     # if args.backend is not None:

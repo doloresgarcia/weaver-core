@@ -37,7 +37,6 @@ def log_roc_curves(y_true, y_score, epoch):
     
     # 5 classes G(0),Q(1),S(2),C(3),B(4)
     # b tagging  (b/g, b/ud, b/c)
-    print('EPOCH', epoch, y_true.shape, y_score.shape)
     _bg = create_binary_rocs(4, 0, y_true, y_score)
     _bud  = create_binary_rocs(4, 1, y_true, y_score)
     _bd  = create_binary_rocs(4, 6, y_true, y_score)

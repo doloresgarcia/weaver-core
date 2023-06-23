@@ -55,21 +55,16 @@ def train_classification(
     count = 0
     start_time = time.time()
     with tqdm.tqdm(train_loader) as tq:
-        for X, y, _ in tq:
-            inputs = [X[k].to(dev) for k in data_config.input_names]
-            label = y[data_config.label_names[0]].long()
-            try:
-                label_mask = y[data_config.label_names[0] + "_mask"].bool()
-            except KeyError:
-                label_mask = None
-            label = _flatten_label(label, label_mask)
+        for batch_g, y in tq:
+            # label = y[data_config.label_names[0]].long()
+            label = y.long()
             num_examples = label.shape[0]
             label_counter.update(label.cpu().numpy())
             label = label.to(dev)
             opt.zero_grad()
             with torch.cuda.amp.autocast(enabled=grad_scaler is not None):
-                model_output = model(*inputs)
-                logits = _flatten_preds(model_output, label_mask)
+                model_output = model(batch_g.to(dev))
+                logits = model_output[0]
                 loss = loss_func(logits, label)
             if grad_scaler is None:
                 loss.backward()
@@ -210,44 +205,29 @@ def evaluate_classification(
     entry_count = 0
     count = 0
     scores = []
+    labels_all = []
     if logwandb:
         counts_particles = []
     labels = defaultdict(list)
     labels_counts = []
     observers = defaultdict(list)
     start_time = time.time()
+    print("STARTING evaluation")
     with torch.no_grad():
         with tqdm.tqdm(test_loader) as tq:
-            for X, y, Z in tq:
-                inputs = [X[k].to(dev) for k in data_config.input_names]
-                label = y[data_config.label_names[0]].long()
+            for g, y in tq:
+                print("batch 1 ")
+                inputs = g.to(dev)
+                label = y.long()
                 entry_count += label.shape[0]
-                try:
-                    label_mask = y[data_config.label_names[0] + "_mask"].bool()
-                except KeyError:
-                    label_mask = None
-                if not for_training and label_mask is not None:
-                    labels_counts.append(np.squeeze(label_mask.numpy().sum(axis=-1)))
-                label = _flatten_label(label, label_mask)
+
                 num_examples = label.shape[0]
                 label_counter.update(label.cpu().numpy())
                 label = label.to(dev)
-                model_output = model(*inputs)
-                logits = _flatten_preds(model_output, label_mask).float()
-
+                model_output = model(inputs)
+                logits = model_output[0]
                 scores.append(torch.softmax(logits, dim=1).detach().cpu().numpy())
-                if logwandb:
-                    mask = inputs[3].detach().cpu()
-                    mask = torch.permute(mask, (0, 2, 1))
-                    mask = torch.reshape(torch.sum(mask, 1), [-1]).numpy()
-                    counts_particles.append(mask)
-
-                for k, v in y.items():
-                    labels[k].append(_flatten_label(v, label_mask).cpu().numpy())
-                if not for_training:
-                    for k, v in Z.items():
-                        observers[k].append(v.cpu().numpy())
-
+                labels_all.append(label.detach().cpu().numpy())
                 _, preds = logits.max(1)
                 loss = 0 if loss_func is None else loss_func(logits, label).item()
 
@@ -316,35 +296,33 @@ def evaluate_classification(
                 )
 
     scores = np.concatenate(scores)
-    labels = {k: _concat(v) for k, v in labels.items()}
-    metric_results = evaluate_metrics(
-        labels[data_config.label_names[0]], scores, eval_metrics=eval_metrics
-    )
+    labels_all = np.concatenate(labels_all)
+    # metric_results = evaluate_metrics(labels_all, scores, eval_metrics=eval_metrics)
 
     if logwandb and local_rank == 0:
-        counts_particles = np.concatenate(counts_particles)
+        # counts_particles = np.concatenate(counts_particles)
         from ..logger_wandb import (
             log_confussion_matrix_wandb,
             log_roc_curves,
             log_histograms,
         )
 
-        y_true_wandb = labels[data_config.label_names[0]]
+        y_true_wandb = labels_all
         scores_wandb = scores
         if len(y_true_wandb) > 10000:
             scores_wandb = scores_wandb[0:10000]
             y_true_wandb = y_true_wandb[0:10000]
-            counts_particles = counts_particles[0:10000]
+            # counts_particles = counts_particles[0:10000]
 
         log_confussion_matrix_wandb(y_true_wandb, scores_wandb, epoch)
         log_roc_curves(y_true_wandb, scores_wandb, epoch)
         print("logging HISTOGRAMS")
-        log_histograms(y_true_wandb, scores_wandb, counts_particles, epoch)
+        # log_histograms(y_true_wandb, scores_wandb, counts_particles, epoch)
 
-    _logger.info(
-        "Evaluation metrics: \n%s",
-        "\n".join(["    - %s: \n%s" % (k, str(v)) for k, v in metric_results.items()]),
-    )
+    # _logger.info(
+    #    "Evaluation metrics: \n%s",
+    #    "\n".join(["    - %s: \n%s" % (k, str(v)) for k, v in metric_results.items()]),
+    # )
 
     if for_training:
         return total_correct / count

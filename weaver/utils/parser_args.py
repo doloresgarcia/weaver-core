@@ -197,7 +197,15 @@ parser.add_argument(
     "--lr-scheduler",
     type=str,
     default="flat+decay",
-    choices=["none", "steps", "flat+decay", "flat+linear", "flat+cos", "one-cycle","reduceplateau"],
+    choices=[
+        "none",
+        "steps",
+        "flat+decay",
+        "flat+linear",
+        "flat+cos",
+        "one-cycle",
+        "reduceplateau",
+    ],
     help="learning rate scheduler",
 )
 parser.add_argument(
@@ -311,3 +319,15 @@ parser.add_argument(
     "--wandb-entity", type=str, help="username or team name where you are sending runs"
 )
 parser.add_argument("--graphs", action="store_true", default=False, help="use graphs")
+parser.add_argument(
+    "--cfg",
+    dest="cfg_file",
+    type=str,
+    help="The configuration file path.",
+)
+parser.add_argument(
+    "opts",
+    default=None,
+    nargs=argparse.REMAINDER,
+    help="See graphgym/config.py for remaining options.",
+)
