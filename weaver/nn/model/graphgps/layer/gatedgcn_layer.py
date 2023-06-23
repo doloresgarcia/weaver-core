@@ -54,7 +54,6 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
 
     def forward(self, batch):
         x, e, edge_index = batch.x, batch.edge_attr, batch.edge_index
-
         """
         x               : [n_nodes, in_dim]
         e               : [n_edges, in_dim]
@@ -75,7 +74,14 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
         pe_LapPE = batch.pe_EquivStableLapPE if self.EquivStablePE else None
 
         x, e = self.propagate(
-            edge_index, Bx=Bx, Dx=Dx, Ex=Ex, Ce=Ce, e=e, Ax=Ax, PE=pe_LapPE
+            edge_index.to(torch.int64),
+            Bx=Bx,
+            Dx=Dx,
+            Ex=Ex,
+            Ce=Ce,
+            e=e,
+            Ax=Ax,
+            PE=pe_LapPE,
         )
 
         x = self.bn_node_x(x)

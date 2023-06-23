@@ -10,6 +10,7 @@ import math
 import torch
 
 from torch.utils.data import DataLoader
+from torch_geometric.loader import dataloader as DataLoader_tg
 from weaver.utils.logger import _logger, _configLogger
 from weaver.utils.dataset import SimpleIterDataset
 from weaver.utils.import_tools import import_module
@@ -92,7 +93,7 @@ def save_parquet(args, output_path, scores, labels, observers):
     ak.to_parquet(ak.Array(output), output_path, compression="LZ4", compression_level=4)
 
 
-def model_setup(args, data_config):
+def model_setup(args, data_config, cfg=None):
     """
     Loads the model
     :param args:
@@ -112,10 +113,14 @@ def model_setup(args, data_config):
     else:
         gpus = None
         dev = torch.device("cpu")
-
-    model, model_info = network_module.get_model(
-        data_config, dev=dev, **network_options
-    )
+    if args.graphs:
+        model, model_info = network_module.get_model(
+            data_config, cfg=cfg, dev=dev, **network_options
+        )
+    else:
+        model, model_info = network_module.get_model(
+            data_config, dev=dev, **network_options
+        )
     if args.load_model_weights:
         model_state = torch.load(args.load_model_weights, map_location="cpu")
         missing_keys, unexpected_keys = model.load_state_dict(model_state, strict=False)
@@ -271,8 +276,28 @@ def train_load(args):
         name="val" + ("" if args.local_rank is None else "_rank%d" % args.local_rank),
     )
     if args.graphs:
-        sys.path.append("/afs/cern.ch/work/m/mgarciam/private/ColorSinglet/")
-        from weaver.nn.model.layers.graph import graph_batch_func
+        # sys.path.append("/afs/cern.ch/work/m/mgarciam/private/ColorSinglet/")
+        # from weaver.nn.model.layers.graph import graph_batch_func
+        from weaver.nn.data.data_conversion.pyg_graphs import graph_batch_func
+    # if args.graphs:
+    #     train_loader = DataLoader_tg(
+    #         train_data,
+    #         batch_size=args.batch_size,
+    #         drop_last=True,
+    #         pin_memory=True,
+    #         num_workers=min(args.num_workers, int(len(train_files) * args.file_fraction)),
+    #         persistent_workers=args.num_workers > 0 and args.steps_per_epoch is not None,
+    #     )
+    #     val_loader = DataLoader_tg(
+    #         val_data,
+    #         batch_size=args.batch_size,
+    #         drop_last=True,
+    #         pin_memory=True,
+    #         num_workers=min(args.num_workers, int(len(val_files) * args.file_fraction)),
+    #         persistent_workers=args.num_workers > 0
+    #         and args.steps_per_epoch_val is not None,
+    #     )
+    # else:
     train_loader = DataLoader(
         train_data,
         batch_size=args.batch_size,
@@ -296,6 +321,7 @@ def train_load(args):
     train_input_names = train_data.config.input_names
     train_label_names = train_data.config.label_names
 
+    print("dataloaders are created")
     return train_loader, val_loader, data_config, train_input_names, train_label_names
 
 
@@ -670,7 +696,7 @@ def optim(args, model, device):
             scheduler._update_per_step = (
                 True  # mark it to update the lr every step, instead of every epoch
             )
-            
+
         elif args.lr_scheduler == "reduceplateau":
             scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3)
     return opt, scheduler

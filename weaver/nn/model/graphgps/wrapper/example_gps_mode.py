@@ -1,21 +1,21 @@
 import torch
-from weaver.nn.model.graph_transformer_net import GraphTransformerNet
+from weaver.nn.model.graphgps.network.gps_model import GPSModel
 
 
 class GraphTransformerNetWrapper(torch.nn.Module):
-    def __init__(self, dev, **kwargs) -> None:
+    def __init__(self, cfg, dev, **kwargs) -> None:
         super().__init__()
-        self.mod = GraphTransformerNet(dev)
+        self.mod = GPSModel(cfg, dev)
 
     def forward(self, g):
         return self.mod(g)
 
 
-def get_model(data_config, dev, **kwargs):
+def get_model(data_config, cfg, dev, **kwargs):
 
     # pf_features_dims = len(data_config.input_dicts['pf_features'])
     # num_classes = len(data_config.label_value)
-    model = GraphTransformerNetWrapper(dev)
+    model = GraphTransformerNetWrapper(cfg, dev)
 
     model_info = {
         "input_names": list(data_config.input_names),
