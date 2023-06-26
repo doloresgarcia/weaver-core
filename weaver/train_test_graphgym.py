@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import os
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
 import ast
 import sys
 import shutil
