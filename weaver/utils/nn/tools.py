@@ -58,7 +58,7 @@ def train_classification(
         for X, y, _, y_check in tq:
             inputs = [X[k].to(dev) for k in data_config.input_names]
             label = y[data_config.label_names[0]].long()
-            label_check = y_check['_labelcheck_'].long()
+            label_check = y_check['_labelcheck_'].long().to(dev)
             try:
                 label_mask = y[data_config.label_names[0] + "_mask"].bool()
             except KeyError:
@@ -222,7 +222,7 @@ def evaluate_classification(
             for X, y, Z, y_check in tq:
                 inputs = [X[k].to(dev) for k in data_config.input_names]
                 label = y[data_config.label_names[0]].long()
-                label_check = y_check['_labelcheck_'].long()
+                label_check = y_check['_labelcheck_'].long().to(dev)
                 entry_count += label.shape[0]
                 try:
                     label_mask = y[data_config.label_names[0] + "_mask"].bool()
