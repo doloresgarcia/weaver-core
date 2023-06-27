@@ -55,9 +55,10 @@ def train_classification(
     count = 0
     start_time = time.time()
     with tqdm.tqdm(train_loader) as tq:
-        for X, y, _ in tq:
+        for X, y, _, y_check in tq:
             inputs = [X[k].to(dev) for k in data_config.input_names]
             label = y[data_config.label_names[0]].long()
+            label_check = y_check['_labelcheck_'].long()
             try:
                 label_mask = y[data_config.label_names[0] + "_mask"].bool()
             except KeyError:
@@ -70,7 +71,7 @@ def train_classification(
             with torch.cuda.amp.autocast(enabled=grad_scaler is not None):
                 model_output = model(*inputs)
                 logits = _flatten_preds(model_output, label_mask)
-                loss = loss_func(logits, label)
+                loss = loss_func1(logits, label,label_check)
             if grad_scaler is None:
                 loss.backward()
                 opt.step()
@@ -218,9 +219,10 @@ def evaluate_classification(
     start_time = time.time()
     with torch.no_grad():
         with tqdm.tqdm(test_loader) as tq:
-            for X, y, Z in tq:
+            for X, y, Z, y_check in tq:
                 inputs = [X[k].to(dev) for k in data_config.input_names]
                 label = y[data_config.label_names[0]].long()
+                label_check = y_check['_labelcheck_'].long()
                 entry_count += label.shape[0]
                 try:
                     label_mask = y[data_config.label_names[0] + "_mask"].bool()
@@ -249,7 +251,7 @@ def evaluate_classification(
                         observers[k].append(v.cpu().numpy())
 
                 _, preds = logits.max(1)
-                loss = 0 if loss_func is None else loss_func(logits, label).item()
+                loss = 0 if loss_func is None else loss_func1(logits, label,label_check ).item()
 
                 num_batches += 1
                 count += num_examples
@@ -728,3 +730,15 @@ class TensorboardHelper(object):
     def write_scalars(self, write_info):
         for tag, scalar_value, global_step in write_info:
             self.writer.add_scalar(tag, scalar_value, global_step)
+
+
+
+
+def loss_func1(logits, label, label_check):
+    loss_f = torch.nn.CrossEntropyLoss(reduce=False)
+    loss = loss_f(logits,label)
+    loss = loss.view(-1)*label_check.view(-1) #! if the label check is zero don't take this events into account
+    loss = torch.mean(loss)
+
+    return loss
+
