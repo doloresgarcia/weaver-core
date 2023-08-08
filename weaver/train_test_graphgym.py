@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
 import ast
 import sys
@@ -114,7 +115,7 @@ def _main(args):
         iotest(args, data_loader)
         return
 
-    model, model_info, loss_func = model_setup(args, data_config, cfg)
+    model, model_info, loss_func = model_setup(args, data_config, dev, cfg)
 
     # TODO: load checkpoint
     # if args.backend is not None:
