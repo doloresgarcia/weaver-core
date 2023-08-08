@@ -93,7 +93,7 @@ def save_parquet(args, output_path, scores, labels, observers):
     ak.to_parquet(ak.Array(output), output_path, compression="LZ4", compression_level=4)
 
 
-def model_setup(args, data_config, cfg=None):
+def model_setup(args, data_config, dev, cfg=None):
     """
     Loads the model
     :param args:
@@ -107,12 +107,12 @@ def model_setup(args, data_config, cfg=None):
         network_options["for_inference"] = True
     if args.use_amp:
         network_options["use_amp"] = True
-    if args.gpus:
-        gpus = [int(i) for i in args.gpus.split(",")]  # ?
-        dev = torch.device(gpus[0])
-    else:
-        gpus = None
-        dev = torch.device("cpu")
+    # if args.gpus:
+    #     gpus = [int(i) for i in args.gpus.split(",")]  # ?
+    #     dev = torch.device(gpus[0])
+    # else:
+    #     gpus = None
+    #     dev = torch.device("cpu")
     if args.graphs:
         model, model_info = network_module.get_model(
             data_config, cfg=cfg, dev=dev, **network_options
