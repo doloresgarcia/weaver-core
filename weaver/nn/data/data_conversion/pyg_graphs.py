@@ -46,7 +46,7 @@ def create_graph(example):
         edge_index[1, :] = j.long()
         data = Data(x=x, edge_index=edge_index, pos=pf_points, y=y)
 
-    data = get_position_encodings(data)
+    # data = get_position_encodings(data)
     return data, y.view(-1)
 
     # import networkx as nx

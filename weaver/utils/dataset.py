@@ -75,7 +75,7 @@ def _finalize_inputs(table, data_config):
         if k not in output:
             output[k] = ak.to_numpy(table[k])
 
-    output['_labelcheck_']= ak.to_numpy(table['_labelcheck_'])
+    output["_labelcheck_"] = ak.to_numpy(table["_labelcheck_"])
     return output
 
 
@@ -124,7 +124,7 @@ def _preprocess(table, data_config, options):
     # define new variables
     table = _build_new_variables(table, data_config.var_funcs)
     # check labels
-    # if data_config.label_type == "simple" and options["training"]:  #! REMOVING THIS TEMPORALY TO BE ABLE TO TRAIN WITH INVALID DATA 
+    # if data_config.label_type == "simple" and options["training"]:  #! REMOVING THIS TEMPORALY TO BE ABLE TO TRAIN WITH INVALID DATA
     #     _check_labels(table)
     # compute reweight indices
     if options["reweight"] and data_config.weight_name is not None:
@@ -330,16 +330,16 @@ class _SimpleIter(object):
         # labels
         y = {k: self.table[k][i].copy() for k in self._data_config.label_names}
 
-        y_check = {'_labelcheck_': self.table['_labelcheck_'][i].copy()}
+        y_check = {"_labelcheck_": self.table["_labelcheck_"][i].copy()}
         # observers / monitor variables
         Z = {k: self.table[k][i].copy() for k in self._data_config.z_variables}
 
-        #graph, y_g = create_graph([X, y])
-        #output = [graph, y_g]
+        graph, y_g = create_graph([X, y])
+        output = [graph, y_g]
 
-        return X, y, Z, y_check
+        # return X, y, Z, y_check
 
-        #return output
+        return output
 
 
 class SimpleIterDataset(torch.utils.data.IterableDataset):
