@@ -64,7 +64,7 @@ def train_classification(
             opt.zero_grad()
             with torch.cuda.amp.autocast(enabled=grad_scaler is not None):
                 model_output = model(batch_g.to(dev))
-                logits = model_output[0]
+                logits = model_output
                 loss = loss_func(logits, label)
             if grad_scaler is None:
                 loss.backward()
@@ -225,7 +225,7 @@ def evaluate_classification(
                 label_counter.update(label.cpu().numpy())
                 label = label.to(dev)
                 model_output = model(inputs)
-                logits = model_output[0]
+                logits = model_output
                 scores.append(torch.softmax(logits, dim=1).detach().cpu().numpy())
                 labels_all.append(label.detach().cpu().numpy())
                 _, preds = logits.max(1)
