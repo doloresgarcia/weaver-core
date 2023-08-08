@@ -161,7 +161,10 @@ def _main(args):
         if args.backend is not None:
             model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
             model = torch.nn.parallel.DistributedDataParallel(
-                model, device_ids=gpus, output_device=local_rank
+                model,
+                device_ids=gpus,
+                output_device=local_rank,
+                find_unused_parameters=True,
             )
 
         # optimizer & learning rate

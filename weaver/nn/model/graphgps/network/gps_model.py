@@ -115,4 +115,4 @@ class GPSModel(torch.nn.Module):
     def forward(self, batch):
         for module in self.children():
             batch = module(batch)
-        return batch
+        return batch[0]
