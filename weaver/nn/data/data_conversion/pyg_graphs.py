@@ -17,6 +17,7 @@ from torch_geometric.utils import (
     scatter,
 )
 from torch_geometric.utils.num_nodes import maybe_num_nodes
+import dgl
 
 
 def create_graph(example):
@@ -35,16 +36,26 @@ def create_graph(example):
     # x = torch.cat((pf_points, pf_features, pf_vectors, pf_mask), dim=1)
     x = pf_features
     y = torch.tensor(example[1]["_label_"])
-    if seq_len > 7:
-        data = Data(x=x, pos=pf_points, y=y)
-        knn_transform = torch_geometric.transforms.KNNGraph(7)
-        data = knn_transform(data)
-    else:
-        i, j = torch.tril_indices(seq_len, seq_len, offset=-1)
-        edge_index = torch.zeros(2, len(i))
-        edge_index[0, :] = i.long()
-        edge_index[1, :] = j.long()
-        data = Data(x=x, edge_index=edge_index, pos=pf_points, y=y)
+    # if seq_len > 7:
+    #     data = Data(x=x, pos=pf_points, y=y)
+    #     knn_transform = torch_geometric.transforms.KNNGraph(7)
+    #     data = knn_transform(data)
+    # else:
+    #     i, j = torch.tril_indices(seq_len, seq_len, offset=-1)
+    #     edge_index = torch.zeros(2, len(i))
+    #     edge_index[0, :] = i.long()
+    #     edge_index[1, :] = j.long()
+    #     data = Data(x=x, edge_index=edge_index, pos=pf_points, y=y)
+
+    i, j = torch.tril_indices(seq_len, seq_len, offset=-1)
+    g = dgl.graph((i, j))  # create fully connected graph
+    g = dgl.to_simple(g)  # remove repated edges
+    g = dgl.to_bidirected(g)
+    i, j = g.edges()
+    edge_index = torch.zeros(2, len(i))
+    edge_index[0, :] = i.long()
+    edge_index[1, :] = j.long()
+    data = Data(x=x, edge_index=edge_index, pos=pf_points, y=y)
 
     # data = get_position_encodings(data)
     return data, y.view(-1)
