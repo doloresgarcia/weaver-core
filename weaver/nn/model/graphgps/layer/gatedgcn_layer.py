@@ -49,9 +49,12 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
             )
         weird_batch_norm = False
         self.weird_batch_norm = weird_batch_norm
-
-        self.bn_node_x = nn.BatchNorm1d(out_dim)
-        self.bn_edge_e = nn.BatchNorm1d(out_dim)
+        if weird_batch_norm:
+            self.bn_node_x = WeirdBatchNorm(out_dim)
+            self.bn_edge_e = WeirdBatchNorm(out_dim)
+        else:
+            self.bn_node_x = nn.BatchNorm1d(out_dim)
+            self.bn_edge_e = nn.BatchNorm1d(out_dim)
         self.act_fn_x = self.activation()
         self.act_fn_e = self.activation()
         self.dropout = dropout
@@ -62,7 +65,7 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
         if self.update_graph:
             self.out_dim = out_dim
             hidden_nf = out_dim * 2
-            act_fn = nn.ReLU()
+            act_fn = nn.SiLU()
             act_fn2 = nn.Sigmoid()
             self.edge_mlp = nn.Sequential(
                 nn.Linear(out_dim * 3, hidden_nf),
@@ -84,17 +87,30 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
         batch = inputs[0]
         turn_vicosity_on = inputs[1]
         x, e, edge_index = batch.x, batch.edge_attr, batch.edge_index
-        """
-        x               : [n_nodes, in_dim]
-        e               : [n_edges, in_dim]
-        edge_index      : [2, n_edges]
-        """
-        if self.residual:
-            x_in = x
-            e_in = e
+
         # print("shaaaaaaaaaapes")
         # print(x.shape)
         # print(e.shape)
+
+        if self.update_graph:
+            # # take x and e and create a new graph
+            i, j = batch.edge_index
+            len_original = batch.edge_index.shape[1]
+            # print("grap updated", len_original, batch.edge_index.shape)
+            if len_original > 0:
+
+                g = dgl.graph((i.long(), j.long()), num_nodes=x.shape[0])
+                i, j = g.edges()
+                g.ndata["h"] = x
+                g.edata["h"] = e
+                g.apply_edges(src_dot_dst("h", "h", "edge_feature"))  # , edges)
+                edge_resulting = self.edge_mlp(g.edata["edge_feature"])
+                batch = percentage_keep_per_graph(batch, edge_resulting)
+
+        e, edge_index = batch.edge_attr, batch.edge_index
+        if self.residual:
+            x_in = x
+            e_in = e
 
         Ax = self.A(x)
         Bx = self.B(x)
@@ -147,27 +163,14 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
 
         batch.x = x
         batch.edge_attr = e
-        if self.update_graph:
-            # # take x and e and create a new graph
-            i, j = batch.edge_index
-            len_original = batch.edge_index.shape[1]
-            # print("grap updated", len_original, batch.edge_index.shape)
-            if len_original > 0:
 
-                g = dgl.graph((i.long(), j.long()), num_nodes=x.shape[0])
-                i, j = g.edges()
-                g.ndata["h"] = x
-                g.edata["h"] = e
-                g.apply_edges(src_dot_dst("h", "h", "edge_feature"))  # , edges)
-                edge_resulting = self.edge_mlp(g.edata["edge_feature"])
-                batch = percentage_keep_per_graph(batch, edge_resulting)
-            #! this code does this overall but then it doesnt take into account that some graphs are left without edges
-            #     mask_edges_keep = edge_resulting > 0.5
-            #     print("keeeping", torch.sum(mask_edges_keep) / len_original)
-            #     percentage_keep = torch.sum(mask_edges_keep) / len_original
-            #     if percentage_keep > 0.05:
-            #         batch.edge_index = batch.edge_index[:, mask_edges_keep.view(-1)]
-            #         batch.edge_attr = e[mask_edges_keep.view(-1)]
+        #! this code does this overall but then it doesnt take into account that some graphs are left without edges
+        #     mask_edges_keep = edge_resulting > 0.5
+        #     print("keeeping", torch.sum(mask_edges_keep) / len_original)
+        #     percentage_keep = torch.sum(mask_edges_keep) / len_original
+        #     if percentage_keep > 0.05:
+        #         batch.edge_index = batch.edge_index[:, mask_edges_keep.view(-1)]
+        #         batch.edge_attr = e[mask_edges_keep.view(-1)]
 
         # elif self.update_graph_knn:
         #     s_l_coordinates = self.node_mlp(x)
@@ -189,12 +192,13 @@ class GatedGCNLayer(pyg_nn.conv.MessagePassing):
 
         # Handling for Equivariant and Stable PE using LapPE
         # ICLR 2022 https://openreview.net/pdf?id=e95i1IHcWj
-        if self.EquivStablePE:
-            r_ij = ((PE_i - PE_j) ** 2).sum(dim=-1, keepdim=True)
-            r_ij = self.mlp_r_ij(r_ij)  # the MLP is 1 dim --> hidden_dim --> 1 dim
-            sigma_ij = sigma_ij * r_ij
+        # if self.EquivStablePE:
+        #     r_ij = ((PE_i - PE_j) ** 2).sum(dim=-1, keepdim=True)
+        #     r_ij = self.mlp_r_ij(r_ij)  # the MLP is 1 dim --> hidden_dim --> 1 dim
+        #     sigma_ij = sigma_ij * r_ij
 
         self.e = e_ij
+
         return sigma_ij
 
     def aggregate(self, sigma_ij, index, Bx_j, Bx):
@@ -251,7 +255,8 @@ def src_dot_dst(src_field, dst_field, out_field):
     def func(edges):
         return {
             out_field: torch.cat(
-                (edges.src["h"], edges.dst["h"], edges.data["h"]), dim=1
+                (edges.src["h"], edges.dst["h"], edges.data["h"]),
+                dim=1,  #! maybe will need to take out the edge data
             )
         }
 
@@ -311,11 +316,12 @@ def percentage_keep_per_graph(batch, edge_resulting):
             "keeping this percentage of the graph",
             torch.sum(mask_.view(-1)) / len(mask_.view(-1)),
         )
-        if torch.sum(mask_.view(-1)) / len(mask_.view(-1)) < 0.1:
+        if torch.sum(mask_.view(-1)) < 2:
             ordered_sigmoid = torch.flip(
                 torch.argsort(edge_sigmoid_graph.view(-1)), dims=[0]
             )
             number_keep = np.ceil(len(mask_.view(-1)) * 0.1).astype(int)
+            number_keep = 2
             mask_ = ordered_sigmoid[0:number_keep]
             # keep at least two edges per graph
         new_edge_index = edge_index_all[index][:, mask_.view(-1)]
