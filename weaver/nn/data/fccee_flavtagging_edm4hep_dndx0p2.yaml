@@ -1,0 +1,118 @@
+#treename:
+selection:
+### use `&`, `|`, `~` for logical operations on numpy arrays
+### can use functions from `math`, `np` (numpy), and `awkward` in the expression
+#(jet_tightId==1) & (jet_no<2) & (fj_pt>200) & (fj_pt<2500) & (((sample_isQCD==0) & (fj_isQCD==0)) | ((sample_isQCD==1) & (fj_isQCD==1))) & (event_no%7!=0)
+#(recojet_e>=5)
+test_time_selection:
+### selection to apply at test time (i.e., when running w/ --predict)
+#(jet_tightId==1) & (jet_no<2) & (fj_pt>200) & (fj_pt<2500) & (((sample_isQCD==0) & (fj_isQCD==0)) | ((sample_isQCD==1) & (fj_isQCD==1))) & (event_no%7==0)
+#(recojet_e<5)
+new_variables:
+  ### [format] name: formula
+  ### can use functions from `math`, `np` (numpy), and `awkward` in the expression
+  #pfcand_mask: awkward.JaggedArray.ones_like(pfcand_etarel)
+  #sv_mask: awkward.JaggedArray.ones_like(sv_etarel)
+  #pfcand_mask: awkward.JaggedArray.ones_like(pfcand_e)
+  pfcand_mask: ak.ones_like(pfcand_e_dndx0p2)
+preprocess:
+  ### method: [manual, auto] - whether to use manually specified parameters for variable standardization
+  ### [note]: `[var]_mask` will not be transformed even if `method=auto`
+  method: auto
+  ### data_fraction: fraction of events to use when calculating the mean/scale for the standardization
+  data_fraction: 0.1
+inputs:
+  pf_points:
+    pad_mode: wrap
+    length: 75
+    vars:
+      - pfcand_thetarel_dndx0p2
+      - pfcand_phirel_dndx0p2
+  pf_features:
+    pad_mode: wrap
+    length: 75
+    vars:
+      ### [format 1]: var_name (no transformation)
+      ### [format 2]: [var_name,
+      ###              subtract_by(optional, default=None, no transf. if preprocess.method=manual, auto transf. if preprocess.method=auto),
+      ###              multiply_by(optional, default=1),
+      ###              clip_min(optional, default=-5),
+      ###              clip_max(optional, default=5),
+      ###              pad_value(optional, default=0)]
+      - pfcand_erel_log_dndx0p2
+      - pfcand_thetarel_dndx0p2
+      - pfcand_phirel_dndx0p2
+      - pfcand_dptdpt_dndx0p2
+      - pfcand_detadeta_dndx0p2
+      - pfcand_dphidphi_dndx0p2
+      - pfcand_dxydxy_dndx0p2
+      - pfcand_dzdz_dndx0p2
+      - pfcand_dxydz_dndx0p2
+      - pfcand_dphidxy_dndx0p2
+      - pfcand_dlambdadz_dndx0p2
+      - pfcand_dxyc_dndx0p2
+      - pfcand_dxyctgtheta_dndx0p2
+      - pfcand_phic_dndx0p2
+      - pfcand_phidz_dndx0p2
+      - pfcand_phictgtheta_dndx0p2
+      - pfcand_cdz_dndx0p2
+      - pfcand_cctgtheta_dndx0p2
+      - pfcand_mtof_dndx0p2
+      # - pfcand_mtofn
+      - pfcand_dndx_dndx0p2
+      - pfcand_charge_dndx0p2
+      - pfcand_isMu_dndx0p2
+      - pfcand_isEl_dndx0p2
+      - pfcand_isChargedHad_dndx0p2
+      - pfcand_isGamma_dndx0p2
+      - pfcand_isNeutralHad_dndx0p2
+      - pfcand_dxy_dndx0p2
+      - pfcand_dz_dndx0p2
+      - pfcand_btagSip2dVal_dndx0p2
+      - pfcand_btagSip2dSig_dndx0p2
+      - pfcand_btagSip3dVal_dndx0p2
+      - pfcand_btagSip3dSig_dndx0p2
+      - pfcand_btagJetDistVal_dndx0p2
+      - pfcand_btagJetDistSig_dndx0p2
+      - pfcand_type_dndx0p2
+  pf_vectors:
+    length: 75
+    pad_mode: wrap
+    vars:
+      - [pfcand_e_dndx0p2, null]
+      - [pfcand_p_dndx0p2, null]
+      - [pfcand_e_dndx0p2, null]
+      - [pfcand_e_dndx0p2, null]
+  pf_mask:
+    length: 75
+    pad_mode: constant
+    vars:
+      - [pfcand_mask, null]
+labels:
+  ### type can be `simple`, `custom`
+  ### [option 1] use `simple` for binary/multi-class classification, then `value` is a list of 0-1 labels
+  type: simple
+  value: [recojet_isG_dndx0p2, recojet_isU_dndx0p2, recojet_isS_dndx0p2, recojet_isC_dndx0p2, recojet_isB_dndx0p2, recojet_isTAU_dndx0p2, recojet_isD_dndx0p2]
+  ### [option 2] otherwise use `custom` to define the label, then `value` is a map
+  # type: custom
+  # value:
+  # target_mass: np.where(fj_isQCD, fj_genjet_sdmass, fj_gen_mass)
+observers:
+#- recojet_e
+#- recojet_theta
+#- recojet_phi
+#- recojet_m
+#- n_pfcand
+weights:
+  ### [option 1] use precomputed weights stored in the input files
+  # use_precomputed_weights: true
+  # weight_branches: [weight, class_weight]
+  ### [option 2] compute weights on-the-fly using reweighting histograms
+  use_precomputed_weights: false
+  reweight_method: flat
+  reweight_vars:
+    jet_phi_dndx0p2: [-10., 10.]
+    jet_theta_dndx0p2: [-10., 10.]
+  reweight_classes: [recojet_isG_dndx0p2, recojet_isU_dndx0p2, recojet_isS_dndx0p2, recojet_isC_dndx0p2, recojet_isB_dndx0p2, recojet_isTAU_dndx0p2, recojet_isD_dndx0p2]
+  class_weights: [1, 1, 1, 1, 1, 1, 1]
+  reweight_hists:
