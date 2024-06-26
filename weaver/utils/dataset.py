@@ -22,7 +22,7 @@ from .data.preprocess import (
 import sys
 
 # from weaver.nn.model.layers.graph import  graph_return_knnij
-from weaver.nn.data.data_conversion.pyg_graphs import create_graph
+from weaver.nn.data.data_conversion.pyg_graphs import create_graph, create_graph_gatr
 
 
 def _finalize_inputs(table, data_config):
@@ -334,12 +334,13 @@ class _SimpleIter(object):
         # observers / monitor variables
         Z = {k: self.table[k][i].copy() for k in self._data_config.z_variables}
 
-        graph, y_g = create_graph([X, y])
-        output = [graph, y_g]
+        # graph, y_g = create_graph([X, y])
+        # graph, y_g = create_graph_gatr([X, y])
+        # output = [graph, y_g]
 
-        # return X, y, Z, y_check
+        return X, y, Z, y_check
 
-        return output
+        # return output
 
 
 class SimpleIterDataset(torch.utils.data.IterableDataset):
