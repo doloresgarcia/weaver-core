@@ -1,0 +1,1062 @@
+[2024-06-14 08:54:37,731] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/fullsim_smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '60430')
+[2024-06-14 08:54:37,732] INFO: Running in classification mode
+[2024-06-14 08:54:39,596] INFO: Using distributed PyTorch with nccl backend
+[2024-06-14 08:54:39,597] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-14 08:54:39,597] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-14 08:54:39,604] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-14 08:54:39,604] INFO: [0;37mselection: None[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-14 08:54:39,605] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-14 08:54:39,605] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-14 08:54:39,605] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mobserver_names: ()[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mreweight_method: flat[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-14 08:54:39,605] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-14 08:54:39,606] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-14 08:54:39,606] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-14 08:54:39,606] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-14 08:54:39,606] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-14 09:38:53,591] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/fullsim_smalldataset'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '50933')
+[2024-06-14 09:38:53,592] INFO: Running in classification mode
+[2024-06-14 09:38:54,167] INFO: Using distributed PyTorch with nccl backend
+[2024-06-14 09:38:54,212] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-14 09:38:54,212] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-14 09:38:54,220] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-14 09:38:54,220] INFO: [0;37mselection: None[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-14 09:38:54,221] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-14 09:38:54,221] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-14 09:38:54,221] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mobserver_names: ()[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_method: flat[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-14 09:38:54,221] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-14 09:41:07,897] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/fullsim_smalldataset/'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '57129')
+[2024-06-14 09:41:07,897] INFO: Running in classification mode
+[2024-06-14 09:41:08,469] INFO: Using distributed PyTorch with nccl backend
+[2024-06-14 09:41:08,470] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-14 09:41:08,470] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-14 09:41:08,478] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mselection: None[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-14 09:41:08,478] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-14 09:41:08,478] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-14 09:41:08,478] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-14 09:41:08,478] INFO: [0;37mobserver_names: ()[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_method: flat[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-14 09:41:08,479] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-17 09:06:56,942] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/fullsim_smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '42456')
+[2024-06-17 09:06:56,943] INFO: Running in classification mode
+[2024-06-17 09:06:58,793] INFO: Using distributed PyTorch with nccl backend
+[2024-06-17 09:06:58,793] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-17 09:06:58,794] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-17 09:06:58,801] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mselection: None[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-17 09:06:58,802] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-17 09:06:58,802] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-17 09:06:58,802] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mobserver_names: ()[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_method: flat[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-17 09:06:58,802] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-18 15:59:28,745] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/fullsim_smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.1)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '40289')
+[2024-06-18 15:59:28,746] INFO: Running in classification mode
+[2024-06-18 15:59:31,065] INFO: Using distributed PyTorch with nccl backend
+[2024-06-18 15:59:31,065] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-18 15:59:31,065] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-18 15:59:31,073] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mselection: None[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-18 15:59:31,074] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-18 15:59:31,074] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-18 15:59:31,074] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mobserver_names: ()[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mreweight_method: flat[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-18 15:59:31,074] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-18 15:59:31,075] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-18 15:59:31,075] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-18 15:59:31,075] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-18 15:59:31,075] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-18 15:59:31,075] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-20 10:50:36,613] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/final-fullsim-inputNN/Hxx-inputNN-smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '35392')
+[2024-06-20 10:50:36,614] INFO: Running in classification mode
+[2024-06-20 10:50:38,348] INFO: Using distributed PyTorch with nccl backend
+[2024-06-20 10:50:38,374] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-20 10:50:38,374] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-20 10:50:38,383] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-20 10:50:38,383] INFO: [0;37mselection: None[0m
+[2024-06-20 10:50:38,383] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-20 10:50:38,383] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-20 10:50:38,384] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-20 10:50:38,384] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-20 10:50:38,384] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mobserver_names: ()[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_method: flat[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-20 10:50:38,384] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-20 10:52:06,819] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/final-fullsim-inputNN/Hxx-inputNN-smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.1)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '49348')
+[2024-06-20 10:52:06,820] INFO: Running in classification mode
+[2024-06-20 10:52:07,273] INFO: Using distributed PyTorch with nccl backend
+[2024-06-20 10:52:07,273] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-20 10:52:07,273] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-20 10:52:07,282] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-20 10:52:07,282] INFO: [0;37mselection: None[0m
+[2024-06-20 10:52:07,282] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-20 10:52:07,282] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_dndx0p2)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG_dndx0p2,recojet_isU_dndx0p2,recojet_isS_dndx0p2,recojet_isC_dndx0p2,recojet_isB_dndx0p2,recojet_isTAU_dndx0p2,recojet_isD_dndx0p2], axis=1), axis=1)')[0m
+[2024-06-20 10:52:07,282] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-20 10:52:07,282] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2'])
+ - ('pf_features', ['pfcand_erel_log_dndx0p2', 'pfcand_thetarel_dndx0p2', 'pfcand_phirel_dndx0p2', 'pfcand_dptdpt_dndx0p2', 'pfcand_detadeta_dndx0p2', 'pfcand_dphidphi_dndx0p2', 'pfcand_dxydxy_dndx0p2', 'pfcand_dzdz_dndx0p2', 'pfcand_dxydz_dndx0p2', 'pfcand_dphidxy_dndx0p2', 'pfcand_dlambdadz_dndx0p2', 'pfcand_dxyc_dndx0p2', 'pfcand_dxyctgtheta_dndx0p2', 'pfcand_phic_dndx0p2', 'pfcand_phidz_dndx0p2', 'pfcand_phictgtheta_dndx0p2', 'pfcand_cdz_dndx0p2', 'pfcand_cctgtheta_dndx0p2', 'pfcand_mtof_dndx0p2', 'pfcand_dndx_dndx0p2', 'pfcand_charge_dndx0p2', 'pfcand_isMu_dndx0p2', 'pfcand_isEl_dndx0p2', 'pfcand_isChargedHad_dndx0p2', 'pfcand_isGamma_dndx0p2', 'pfcand_isNeutralHad_dndx0p2', 'pfcand_dxy_dndx0p2', 'pfcand_dz_dndx0p2', 'pfcand_btagSip2dVal_dndx0p2', 'pfcand_btagSip2dSig_dndx0p2', 'pfcand_btagSip3dVal_dndx0p2', 'pfcand_btagSip3dSig_dndx0p2', 'pfcand_btagJetDistVal_dndx0p2', 'pfcand_btagJetDistSig_dndx0p2', 'pfcand_type_dndx0p2'])
+ - ('pf_vectors', ['pfcand_e_dndx0p2', 'pfcand_p_dndx0p2', 'pfcand_e_dndx0p2', 'pfcand_e_dndx0p2'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-20 10:52:07,282] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-20 10:52:07,282] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p_dndx0p2', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mobserver_names: ()[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mreweight_method: flat[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-20 10:52:07,284] INFO: [0;37mreweight_branches: ('jet_phi_dndx0p2', 'jet_theta_dndx0p2')[0m
+[2024-06-20 10:52:07,285] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-20 10:52:07,285] INFO: [0;37mreweight_classes: ('recojet_isG_dndx0p2', 'recojet_isU_dndx0p2', 'recojet_isS_dndx0p2', 'recojet_isC_dndx0p2', 'recojet_isB_dndx0p2', 'recojet_isTAU_dndx0p2', 'recojet_isD_dndx0p2')[0m
+[2024-06-20 10:52:07,285] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-20 10:52:07,285] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-20 10:52:07,285] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-20 11:01:50,217] INFO: args:
+ - ('regression_mode', False)
+ - ('data_config', './configs/example.yaml')
+ - ('extra_selection', None)
+ - ('extra_test_selection', None)
+ - ('data_train', ['/afs/cern.ch/work/s/saaumill/public/final-fullsim-inputNN/Hxx-inputNN-smalldata.root'])
+ - ('data_val', [])
+ - ('data_test', [])
+ - ('data_fraction', 1)
+ - ('file_fraction', 1)
+ - ('fetch_by_files', False)
+ - ('fetch_step', 0.01)
+ - ('in_memory', False)
+ - ('train_val_split', 0.8)
+ - ('no_remake_weights', False)
+ - ('demo', False)
+ - ('lr_finder', None)
+ - ('tensorboard', None)
+ - ('tensorboard_custom_fn', None)
+ - ('network_config', './weaver/nn/model/ParticleTransformer.py')
+ - ('network_option', [])
+ - ('model_prefix', './model_weights/')
+ - ('load_model_weights', None)
+ - ('num_epochs', 40)
+ - ('steps_per_epoch', None)
+ - ('steps_per_epoch_val', None)
+ - ('samples_per_epoch', None)
+ - ('samples_per_epoch_val', None)
+ - ('optimizer', 'ranger')
+ - ('optimizer_option', [])
+ - ('lr_scheduler', 'reduceplateau')
+ - ('warmup_steps', 0)
+ - ('load_epoch', None)
+ - ('start_lr', 0.001)
+ - ('batch_size', 2048)
+ - ('use_amp', False)
+ - ('gpus', '0,1,2,3')
+ - ('predict_gpus', '0,1,2,3')
+ - ('num_workers', 0)
+ - ('predict', False)
+ - ('predict_output', None)
+ - ('export_onnx', None)
+ - ('io_test', False)
+ - ('copy_inputs', False)
+ - ('log', '.000')
+ - ('print', False)
+ - ('profile', False)
+ - ('backend', 'nccl')
+ - ('cross_validation', None)
+ - ('log_wandb', True)
+ - ('wandb_displayname', 'ND_PT_2048_ip0p2')
+ - ('wandb_projectname', 'test_project')
+ - ('wandb_entity', None)
+ - ('graphs', False)
+ - ('cfg_file', None)
+ - ('opts', [])
+ - ('local_rank', 0)
+ - ('port', '50771')
+[2024-06-20 11:01:50,218] INFO: Running in classification mode
+[2024-06-20 11:01:50,776] INFO: Using distributed PyTorch with nccl backend
+[2024-06-20 11:01:50,776] INFO: Using 1 files for training, range: (0, 0.8)
+[2024-06-20 11:01:50,776] INFO: Using 1 files for validation, range: (0.8, 1)
+[2024-06-20 11:01:50,784] INFO: [0;37mpreprocess config: {'method': 'auto', 'data_fraction': 0.1, 'params': None}[0m
+[2024-06-20 11:01:50,784] INFO: [0;37mselection: None[0m
+[2024-06-20 11:01:50,784] INFO: [0;37mtest_time_selection: None[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mvar_funcs:
+ - ('pfcand_mask', 'ak.ones_like(pfcand_e_)')
+ - ('_label_', 'np.argmax(np.stack([recojet_isG,recojet_isU,recojet_isS,recojet_isC,recojet_isB,recojet_isTAU,recojet_isD], axis=1), axis=1)')
+ - ('_labelcheck_', 'np.sum(np.stack([recojet_isG,recojet_isU,recojet_isS,recojet_isC,recojet_isB,recojet_isTAU,recojet_isD], axis=1), axis=1)')[0m
+[2024-06-20 11:01:50,785] INFO: [0;37minput_names: ('pf_points', 'pf_features', 'pf_vectors', 'pf_mask')[0m
+[2024-06-20 11:01:50,785] INFO: [0;37minput_dicts:
+ - ('pf_points', ['pfcand_thetarel', 'pfcand_phirel'])
+ - ('pf_features', ['pfcand_erel_log', 'pfcand_thetarel', 'pfcand_phirel', 'pfcand_dptdpt', 'pfcand_detadeta', 'pfcand_dphidphi', 'pfcand_dxydxy', 'pfcand_dzdz', 'pfcand_dxydz', 'pfcand_dphidxy', 'pfcand_dlambdadz', 'pfcand_dxyc', 'pfcand_dxyctgtheta', 'pfcand_phic', 'pfcand_phidz', 'pfcand_phictgtheta', 'pfcand_cdz', 'pfcand_cctgtheta', 'pfcand_mtof', 'pfcand_dndx', 'pfcand_charge', 'pfcand_isMu', 'pfcand_isEl', 'pfcand_isChargedHad', 'pfcand_isGamma', 'pfcand_isNeutralHad', 'pfcand_dxy', 'pfcand_dz', 'pfcand_btagSip2dVal', 'pfcand_btagSip2dSig', 'pfcand_btagSip3dVal', 'pfcand_btagSip3dSig', 'pfcand_btagJetDistVal', 'pfcand_btagJetDistSig', 'pfcand_type'])
+ - ('pf_vectors', ['pfcand_e', 'pfcand_p', 'pfcand_e', 'pfcand_e'])
+ - ('pf_mask', ['pfcand_mask'])[0m
+[2024-06-20 11:01:50,785] INFO: [0;37minput_shapes:
+ - ('pf_points', (-1, 2, 75))
+ - ('pf_features', (-1, 35, 75))
+ - ('pf_vectors', (-1, 4, 75))
+ - ('pf_mask', (-1, 1, 75))[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mpreprocess_params:
+ - ('pfcand_thetarel', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phirel', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_erel_log', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dptdpt', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_detadeta', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidphi', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydxy', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dzdz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxydz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dphidxy', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dlambdadz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyc', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxyctgtheta', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phic', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phidz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_phictgtheta', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cdz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_cctgtheta', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mtof', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dndx', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_charge', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isMu', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isEl', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isChargedHad', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isGamma', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_isNeutralHad', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dxy', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_dz', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dVal', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip2dSig', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dVal', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagSip3dSig', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistVal', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_btagJetDistSig', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_type', {'length': 75, 'pad_mode': 'wrap', 'center': 'auto', 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_e', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_p', {'length': 75, 'pad_mode': 'wrap', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})
+ - ('pfcand_mask', {'length': 75, 'pad_mode': 'constant', 'center': None, 'scale': 1, 'min': -5, 'max': 5, 'pad_value': 0})[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mlabel_names: ('_label_',)[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mobserver_names: ()[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mmonitor_variables: ()[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_method: flat[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_basewgt: None[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_branches: ('jet_phi_', 'jet_theta_')[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_bins: ([-10.0, 10.0], [-10.0, 10.0])[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_classes: ('recojet_isG', 'recojet_isU', 'recojet_isS', 'recojet_isC', 'recojet_isB', 'recojet_isTAU', 'recojet_isD')[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mclass_weights: [1, 1, 1, 1, 1, 1, 1][0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_threshold: 10[0m
+[2024-06-20 11:01:50,785] INFO: [0;37mreweight_discard_under_overflow: True[0m
+[2024-06-20 11:01:51,524] INFO: Using 2639 events to calculate standardization info
+[2024-06-20 11:01:51,527] INFO: [AutoStandardizer] pfcand_thetarel low=0.06445103466510772, center=0.18250437080860138, high=0.4914673137664795, scale=3.2366341103124885
+[2024-06-20 11:01:51,528] INFO: [AutoStandardizer] pfcand_phirel low=-2.0983600330352785, center=-0.019407092593610287, high=2.057014608383178, scale=0.48101136901518926
+[2024-06-20 11:01:51,530] INFO: [AutoStandardizer] pfcand_erel_log low=-2.1777453136444094, center=-1.6433875560760498, high=-1.096292214393616, scale=1.8278349746586924
+[2024-06-20 11:01:51,531] INFO: [AutoStandardizer] pfcand_dptdpt low=-9.0, center=-9.0, high=3.2287356642457503e-12, scale=0.11111111111107125
+[2024-06-20 11:01:51,532] INFO: [AutoStandardizer] pfcand_detadeta low=-9.0, center=-9.0, high=3.438485591686909e-06, scale=0.11111106866068791
+[2024-06-20 11:01:51,534] INFO: [AutoStandardizer] pfcand_dphidphi low=-9.0, center=-9.0, high=2.20293120946735e-06, scale=0.11111108391443617
+[2024-06-20 11:01:51,535] INFO: [AutoStandardizer] pfcand_dxydxy low=-9.0, center=-9.0, high=0.0004946453031152483, scale=0.11110500471458504
+[2024-06-20 11:01:51,536] INFO: [AutoStandardizer] pfcand_dzdz low=-9.0, center=-9.0, high=0.0007542861136607825, scale=0.11110179971725227
+[2024-06-20 11:01:51,537] INFO: [AutoStandardizer] pfcand_dxydz low=-9.0, center=-9.0, high=2.54708119200586e-07, scale=0.11111110796656652
+[2024-06-20 11:01:51,538] INFO: [AutoStandardizer] pfcand_dphidxy low=-9.0, center=-9.0, high=-5.848619766766207e-06, scale=0.11111118331634033
+[2024-06-20 11:01:51,539] INFO: [AutoStandardizer] pfcand_dlambdadz low=-9.0, center=-9.0, high=-7.897700634202923e-06, scale=0.11111120861367363
+[2024-06-20 11:01:51,540] INFO: [AutoStandardizer] pfcand_dxyc low=-9.0, center=-9.0, high=-7.640901356076318e-11, scale=0.11111111111205442
+[2024-06-20 11:01:51,541] INFO: [AutoStandardizer] pfcand_dxyctgtheta low=-9.0, center=-9.0, high=8.255209955621007e-09, scale=0.11111111100919493
+[2024-06-20 11:01:51,542] INFO: [AutoStandardizer] pfcand_phic low=-9.0, center=-9.0, high=8.62630294973243e-11, scale=0.11111111111004612
+[2024-06-20 11:01:51,544] INFO: [AutoStandardizer] pfcand_phidz low=-9.0, center=-9.0, high=9.148049002760652e-09, scale=0.11111111099817222
+[2024-06-20 11:01:51,545] INFO: [AutoStandardizer] pfcand_phictgtheta low=-9.0, center=-9.0, high=3.4730432640905897e-10, scale=0.1111111111068234
+[2024-06-20 11:01:51,546] INFO: [AutoStandardizer] pfcand_cdz low=-9.0, center=-9.0, high=2.0308135728619404e-10, scale=0.11111111110860393
+[2024-06-20 11:01:51,547] INFO: [AutoStandardizer] pfcand_cctgtheta low=-9.0, center=-9.0, high=1.2879642109775412e-11, scale=0.1111111111109521
+[2024-06-20 11:01:51,548] INFO: [AutoStandardizer] pfcand_mtof low=0.0, center=0.0, high=0.0, scale=1
+[2024-06-20 11:01:51,548] INFO: [AutoStandardizer] pfcand_dndx low=0.0, center=0.0, high=0.0, scale=1
+[2024-06-20 11:01:51,549] INFO: [AutoStandardizer] pfcand_charge low=-1.0, center=0.0, high=1.0, scale=1.0

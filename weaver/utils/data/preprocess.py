@@ -116,6 +116,7 @@ class AutoStandardizer(object):
         _logger.info('Using %d events to calculate standardization info', len(table))
         preprocess_params = copy.deepcopy(self._data_config.preprocess_params)
         for k, params in self._data_config.preprocess_params.items():
+            print("debugging here ", k, params)
             if params['center'] == 'auto':
                 if k.endswith('_mask'):
                     params['center'] = None
@@ -126,6 +127,7 @@ class AutoStandardizer(object):
                         _logger.warning('[AutoStandardizer] Found NaN in `%s`, will convert it to 0.', k)
                         time.sleep(10)
                         a = np.nan_to_num(a)
+                    print("a: ", a)
                     low, center, high = np.percentile(a, [16, 50, 84])
                     scale = max(high - center, center - low)
                     scale = 1 if scale == 0 else 1. / scale
