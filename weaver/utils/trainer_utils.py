@@ -119,7 +119,7 @@ def model_setup(args, data_config, dev, cfg=None):
         )
     else:
         model, model_info = network_module.get_model(
-            data_config, dev=dev, **network_options
+            data_config, **network_options
         )
     if args.load_model_weights:
         model_state = torch.load(args.load_model_weights, map_location="cpu")
