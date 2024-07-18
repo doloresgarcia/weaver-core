@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 import ast
