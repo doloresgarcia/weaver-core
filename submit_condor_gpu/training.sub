@@ -1,0 +1,12 @@
+executable    = submitTrainingJob.sh
+# here you specify where to put .log, .out and .err files
+output                = /afs/cern.ch/work/s/saaumill/public/std-condor-training/job.$(ClusterId).$(ProcId).out
+error                 = /afs/cern.ch/work/s/saaumill/public/std-condor-training/job.$(ClusterId).$(ProcId).err
+log                   = /afs/cern.ch/work/s/saaumill/public/std-condor-training/job.$(ClusterId).$(ClusterId).log
+
++AccountingGroup = "group_u_FCC.local_gen"
++JobFlavour    = "microcentury"
+request_gpus = 1
+# use 1 gpu and try with 2 epochs first 
+arguments="1 2"
+queue
