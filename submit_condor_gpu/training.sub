@@ -6,7 +6,7 @@ log                   = /afs/cern.ch/work/s/saaumill/public/std-condor-training/
 
 +AccountingGroup = "group_u_FCC.local_gen"
 +JobFlavour    = "microcentury"
-request_gpus = 1
+request_gpus = 4
 # use 1 gpu and try with 2 epochs first 
-arguments="1 2"
+arguments="4 40"
 queue
