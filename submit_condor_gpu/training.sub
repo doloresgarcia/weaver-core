@@ -5,7 +5,7 @@ error                 = /afs/cern.ch/work/s/saaumill/public/std-condor-training/
 log                   = /afs/cern.ch/work/s/saaumill/public/std-condor-training/job.$(ClusterId).$(ClusterId).log
 
 +AccountingGroup = "group_u_FCC.local_gen"
-+JobFlavour    = "microcentury"
++JobFlavour    = "tomorrow"
 request_gpus = 4
 # use 1 gpu and try with 2 epochs first 
 arguments="4 40"
