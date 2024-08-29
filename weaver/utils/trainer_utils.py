@@ -93,7 +93,7 @@ def save_parquet(args, output_path, scores, labels, observers):
     ak.to_parquet(ak.Array(output), output_path, compression="LZ4", compression_level=4)
 
 
-def model_setup(args, data_config, dev, cfg=None):
+def model_setup(args, data_config, dev=None, cfg=None):
     """
     Loads the model
     :param args:
@@ -118,9 +118,7 @@ def model_setup(args, data_config, dev, cfg=None):
             data_config, cfg=cfg, dev=dev, **network_options
         )
     else:
-        model, model_info = network_module.get_model(
-            data_config, **network_options
-        )
+        model, model_info = network_module.get_model(data_config, **network_options)
     if args.load_model_weights:
         model_state = torch.load(args.load_model_weights, map_location="cpu")
         missing_keys, unexpected_keys = model.load_state_dict(model_state, strict=False)
@@ -675,9 +673,11 @@ def optim(args, model, device):
             scheduler = torch.optim.lr_scheduler.LambdaLR(
                 opt,
                 lr_fn,
-                last_epoch=-1
-                if args.load_epoch is None
-                else args.load_epoch * args.steps_per_epoch,
+                last_epoch=(
+                    -1
+                    if args.load_epoch is None
+                    else args.load_epoch * args.steps_per_epoch
+                ),
             )
             scheduler._update_per_step = (
                 True  # mark it to update the lr every step, instead of every epoch
