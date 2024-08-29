@@ -93,7 +93,7 @@ def save_parquet(args, output_path, scores, labels, observers):
     ak.to_parquet(ak.Array(output), output_path, compression="LZ4", compression_level=4)
 
 
-def model_setup(args, data_config, dev, cfg=None):
+def model_setup(args, data_config, dev=None, cfg=None):
     """
     Loads the model
     :param args:
@@ -172,7 +172,7 @@ def to_filelist(args, mode="train"):
 
     if args.local_rank is not None:
         if mode == "train":
-            local_world_size = int(os.environ["LOCAL_WORLD_SIZE"])
+            local_world_size = 2  # int(os.environ["LOCAL_WORLD_SIZE"])
             new_file_dict = {}
             for name, files in file_dict.items():
                 new_files = files[args.local_rank :: local_world_size]
@@ -180,7 +180,7 @@ def to_filelist(args, mode="train"):
                 np.random.shuffle(new_files)
                 new_file_dict[name] = new_files
             file_dict = new_file_dict
-
+        print("file_dic", file_dict)
     if args.copy_inputs:
         import tempfile
 
@@ -322,7 +322,13 @@ def train_load(args):
     train_label_names = train_data.config.label_names
 
     print("dataloaders are created")
-    return train_loader, val_loader, data_config, train_input_names, train_label_names
+    return (
+        train_loader,
+        val_loader,
+        data_config,
+        train_input_names,
+        train_label_names,
+    )  # , train_label_names
 
 
 def test_load(args):
@@ -409,7 +415,7 @@ def onnx(args):
     data_config = DataConfig.load(
         args.data_config, load_observers=False, load_reweight_info=False
     )
-    model, model_info, _ = model_setup(args, data_config)
+    model, model_info, _ = model_setup(args, data_config, dev=None)
     model.load_state_dict(torch.load(model_path, map_location="cpu"))
     model = model.cpu()
     model.eval()
@@ -675,9 +681,11 @@ def optim(args, model, device):
             scheduler = torch.optim.lr_scheduler.LambdaLR(
                 opt,
                 lr_fn,
-                last_epoch=-1
-                if args.load_epoch is None
-                else args.load_epoch * args.steps_per_epoch,
+                last_epoch=(
+                    -1
+                    if args.load_epoch is None
+                    else args.load_epoch * args.steps_per_epoch
+                ),
             )
             scheduler._update_per_step = (
                 True  # mark it to update the lr every step, instead of every epoch
