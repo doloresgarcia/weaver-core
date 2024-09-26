@@ -232,6 +232,7 @@ class WeightMaker(object):
                 hist = result[label]
                 threshold_ = np.median(hist[hist > 0]) * 0.01
                 nonzero_vals = hist[hist > threshold_]
+                print("DEBUG label:", label)
                 min_val, med_val = np.min(nonzero_vals), np.median(hist)  # not really used
                 ref_val = np.percentile(nonzero_vals, self._data_config.reweight_threshold)
                 _logger.debug('label:%s, median=%f, min=%f, ref=%f, ref/min=%f' %

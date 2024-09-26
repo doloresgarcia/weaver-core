@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,2"
 import ast
 import sys
 import shutil
@@ -65,11 +65,13 @@ def _main(args):
     training_mode = not args.predict
 
     print("TESTING THIS", args.backend)
+
     # device
     if args.gpus:
         # distributed training
         if args.backend is not None:
             local_rank = args.local_rank
+            print(f"Local rank: {local_rank}") 
             torch.cuda.set_device(local_rank)
             gpus = [local_rank]
             dev = torch.device(local_rank)
@@ -196,6 +198,7 @@ def _main(args):
             _logger.info("-" * 50)
             _logger.info("Epoch #%d training" % epoch)
             # print('number of steps per epoch', args.steps_per_epoch)
+
             train(
                 model,
                 loss_func,
