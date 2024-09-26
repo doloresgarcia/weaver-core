@@ -426,7 +426,7 @@ class Block(nn.Module):
             residual = x
             x = self.pre_attn_norm(x)
             x = self.attn(x, x, x, key_padding_mask=padding_mask,
-                          attn_mask=attn_mask)[0]  # (seq_len, batch, embed_dim)
+                          attn_mask=attn_mask)[0]  # (seq_len, batch, embed_dim) # THIS GIVES nans
 
         if self.c_attn is not None:
             tgt_len = x.size(0)
@@ -535,6 +535,7 @@ class ParticleTransformer(nn.Module):
         # for pytorch: uu (N, C', num_pairs), uu_idx (N, 2, num_pairs)
         # for onnx: uu (N, C', P, P), uu_idx=None
 
+
         with torch.no_grad():
             if not self.for_inference:
                 if uu_idx is not None:
@@ -551,13 +552,12 @@ class ParticleTransformer(nn.Module):
 
             # transform
             for block in self.blocks:
-                x = block(x, x_cls=None, padding_mask=padding_mask, attn_mask=attn_mask)
+                x = block(x, x_cls=None, padding_mask=padding_mask, attn_mask=attn_mask) # here are nans created!
 
             # extract class token
             cls_tokens = self.cls_token.expand(1, x.size(1), -1)  # (1, N, C)
             for block in self.cls_blocks:
                 cls_tokens = block(x, x_cls=cls_tokens, padding_mask=padding_mask)
-
             x_cls = self.norm(cls_tokens).squeeze(0)
 
             # fc
@@ -566,7 +566,7 @@ class ParticleTransformer(nn.Module):
             output = self.fc(x_cls)
             if self.for_inference:
                 output = torch.softmax(output, dim=1)
-            # print('output:\n', output)
+
             return output
 
 

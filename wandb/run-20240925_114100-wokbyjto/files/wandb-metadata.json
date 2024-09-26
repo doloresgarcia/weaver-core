@@ -1,0 +1,418 @@
+{
+    "os": "Linux-3.10.0-1160.119.1.el7.x86_64-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2024-09-25T09:41:00.926279",
+    "startedAt": "2024-09-25T09:41:00.084097",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--data-train",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Hbb.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Hcc.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Hdd.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Hgg.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Hss.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Htautau.root",
+        "/eos/experiment/fcc/ee/jet_flavour_tagging/winter2023/samples_v6/training/Huu.root",
+        "--data-config",
+        "./configs/example_fastsim.f940c68c607f32702b2fc8a822709603.auto.yaml",
+        "--no-remake-weights",
+        "--network-config",
+        "./../particle_transformer/networks/example_ParticleTransformer.py",
+        "--model-prefix",
+        "./model_weights_fastsimCLD240/",
+        "--num-workers",
+        "0",
+        "--gpus",
+        "0,1",
+        "--batch-size",
+        "2048",
+        "--start-lr",
+        "1e-3",
+        "--num-epochs",
+        "60",
+        "--optimizer",
+        "ranger",
+        "--fetch-step",
+        "0.01",
+        "--log-wandb",
+        "--wandb-displayname",
+        "test_fastsim_CLD",
+        "--wandb-projectname",
+        "CLD_FastSim_tagging",
+        "--lr-scheduler",
+        "reduceplateau",
+        "--backend",
+        "nccl"
+    ],
+    "state": "running",
+    "program": "-m weaver.train",
+    "codePathLocal": null,
+    "git": {
+        "remote": "git@github.com:doloresgarcia/weaver-core.git",
+        "commit": "e45b6fab6d3b7075015a2e15167972ddbf9a075c"
+    },
+    "email": "sara.aumiller@cern.ch",
+    "root": "/home/mgarciam/saaumill/weaver-core",
+    "host": "fcc-gpu-04v2.cern.ch",
+    "username": "saaumill",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 64,
+    "cpu_count_logical": 64,
+    "cpu_freq": {
+        "current": 3000.022999999996,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.023,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 0.0625,
+            "used": 1.1444091796875e-05
+        }
+    },
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "gpu_count": 4,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        }
+    ],
+    "memory": {
+        "total": 461.15125274658203
+    }
+}
