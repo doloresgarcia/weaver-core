@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
 import ast
 import sys
 import shutil
