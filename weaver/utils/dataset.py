@@ -22,7 +22,7 @@ from .data.preprocess import (
 import sys
 
 # from weaver.nn.model.layers.graph import  graph_return_knnij
-from weaver.nn.data.data_conversion.pyg_graphs import create_graph, create_graph_gatr
+# from weaver.nn.data.data_conversion.pyg_graphs import create_graph, create_graph_gatr
 
 
 def _finalize_inputs(table, data_config):
@@ -115,9 +115,11 @@ def _preprocess(table, data_config, options):
     # apply selection
     table = _apply_selection(
         table,
-        data_config.selection
-        if options["training"]
-        else data_config.test_time_selection,
+        (
+            data_config.selection
+            if options["training"]
+            else data_config.test_time_selection
+        ),
     )
     if len(table) == 0:
         return []
@@ -337,7 +339,7 @@ class _SimpleIter(object):
         # graph, y_g = create_graph([X, y])
         # graph, y_g = create_graph_gatr([X, y])
         # output = [graph, y_g]
-
+        # print("X", X.shape)
         return X, y, Z, y_check
 
         # return output
