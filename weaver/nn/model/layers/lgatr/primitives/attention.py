@@ -6,7 +6,7 @@ from torch import Tensor
 from torch.nn.functional import scaled_dot_product_attention as torch_sdpa
 from xformers.ops import AttentionBias, memory_efficient_attention
 
-from gatr.primitives.invariants import _load_inner_product_factors
+from weaver.nn.model.layers.lgatr.primitives.invariants import _load_inner_product_factors
 
 # Masked out attention logits are set to this constant (a finite replacement for -inf):
 _MASKED_OUT = float("-inf")

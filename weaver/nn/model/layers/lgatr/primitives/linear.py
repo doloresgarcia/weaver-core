@@ -4,7 +4,7 @@ import torch
 import clifford
 import numpy as np
 
-from gatr.utils.einsum import cached_einsum, custom_einsum
+from weaver.nn.model.layers.lgatr.utils.einsum import cached_einsum, custom_einsum
 
 
 @lru_cache()

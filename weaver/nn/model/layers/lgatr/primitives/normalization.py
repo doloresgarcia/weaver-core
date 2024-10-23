@@ -1,6 +1,6 @@
 import torch
 
-from gatr.primitives.invariants import abs_squared_norm
+from weaver.nn.model.layers.lgatr.primitives.invariants import abs_squared_norm
 
 
 def equi_layer_norm(

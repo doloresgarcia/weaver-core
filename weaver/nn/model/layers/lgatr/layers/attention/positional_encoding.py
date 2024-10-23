@@ -20,7 +20,7 @@ limitations under the License.
 
 import torch
 
-from gatr.utils.einsum import cached_einsum
+from weaver.nn.model.layers.lgatr.utils.einsum import cached_einsum
 
 
 class ApplyRotaryPositionalEncoding(torch.nn.Module):

@@ -1,6 +1,6 @@
 import torch
 
-from gatr.primitives.linear import grade_project
+from weaver.nn.model.layers.lgatr.primitives.linear import grade_project
 
 
 def grade_dropout(x: torch.Tensor, p: float, training: bool = True) -> torch.Tensor:

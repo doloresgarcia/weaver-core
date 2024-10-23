@@ -6,8 +6,8 @@ import numpy as np
 import torch
 from torch import nn
 
-from gatr.interface import embed_scalar
-from gatr.primitives.linear import NUM_PIN_LINEAR_BASIS_ELEMENTS, equi_linear
+from weaver.nn.model.layers.lgatr.interface import embed_scalar
+from weaver.nn.model.layers.lgatr.primitives.linear import NUM_PIN_LINEAR_BASIS_ELEMENTS, equi_linear
 
 MIX_DUALS = False
 INCLUDE_AXIALVECTOR = True

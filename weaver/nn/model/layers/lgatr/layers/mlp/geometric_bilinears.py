@@ -5,9 +5,9 @@ from typing import Optional, Tuple
 import torch
 from torch import nn
 
-from gatr.layers.linear import EquiLinear
-from gatr.primitives import geometric_product
-from gatr.layers.layer_norm import EquiLayerNorm
+from weaver.nn.model.layers.lgatr.layers.linear import EquiLinear
+from weaver.nn.model.layers.lgatr.primitives import geometric_product
+from weaver.nn.model.layers.lgatr.layers.layer_norm import EquiLayerNorm
 
 INCLUDE_TENSOR = True
 

@@ -6,12 +6,12 @@ import torch
 from einops import rearrange
 from torch import nn
 
-from gatr.layers.attention.attention import GeometricAttention
-from gatr.layers.attention.config import SelfAttentionConfig
-from gatr.layers.attention.positional_encoding import ApplyRotaryPositionalEncoding
-from gatr.layers.attention.qkv import MultiQueryQKVModule, QKVModule
-from gatr.layers.dropout import GradeDropout
-from gatr.layers.linear import EquiLinear
+from weaver.nn.model.layers.lgatr.layers.attention.attention import GeometricAttention
+from weaver.nn.model.layers.lgatr.layers.attention.config import SelfAttentionConfig
+from weaver.nn.model.layers.lgatr.layers.attention.positional_encoding import ApplyRotaryPositionalEncoding
+from weaver.nn.model.layers.lgatr.layers.attention.qkv import MultiQueryQKVModule, QKVModule
+from weaver.nn.model.layers.lgatr.layers.dropout import GradeDropout
+from weaver.nn.model.layers.lgatr.layers.linear import EquiLinear
 
 
 class SelfAttention(nn.Module):

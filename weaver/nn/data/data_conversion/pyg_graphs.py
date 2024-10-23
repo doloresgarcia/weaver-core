@@ -34,8 +34,9 @@ def create_graph_gatr(example):
         torch.tensor(example[0]["pf_vectors"][:, 0:seq_len]), (1, 0)
     )
     r = pf_vectors[:, 1]
-    coordinates = to_car(pf_points[:, 0], pf_points[:, 1], r)
+    coordinates = to_car(pf_points[:, 0], pf_points[:, 1], r) # p_x, p_y, p_z
     # pf_mask = torch.permute(torch.tensor(example[0]["pf_mask"][:, 0:seq_len]), (1, 0))
+    four_mom = torch.cat((pf_vectors[:,0].view(-1, 1), coordinates), dim=1) # E, px, py, pz
 
     y = torch.tensor(example[1]["_label_"])
 
@@ -43,7 +44,7 @@ def create_graph_gatr(example):
     # g.add_nodes(pf_features.shape[0])
     # g.ndata["pf_features"] = pf_features
     # g.ndata["coordinates"] = coordinates
-    data = Data(x=pf_features, pos=coordinates, y=y)
+    data = Data(x=pf_features, pos=four_mom, y=y)
 
     return data, y.view(-1)
 
@@ -112,8 +113,10 @@ def graph_batch_func(list_graphs):
     Returns:
         batch pytorch geometric: pytorch geometric batch of graphs
     """
+    #print("list_y: 0 element",[el[1]['_label_'] for el in list_graphs])
     list_graphs_g = [el[0] for el in list_graphs]
     list_y = torch.cat([el[1] for el in list_graphs], dim=0)
+    #list_y = torch.tensor([el[1]['_label_'] for el in list_graphs])
     bg = torch_geometric.data.Batch.from_data_list(list_graphs_g)
     # bg = dgl.batch(list_graphs_g)
     # bg_exp = dgl.batch(list_graphs_gexp)

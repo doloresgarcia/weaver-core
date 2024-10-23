@@ -2,8 +2,8 @@ import torch
 from einops import rearrange
 from torch import nn
 
-from gatr.layers.attention.config import SelfAttentionConfig
-from gatr.layers.linear import EquiLinear
+from weaver.nn.model.layers.lgatr.layers.attention.config import SelfAttentionConfig
+from weaver.nn.model.layers.lgatr.layers.linear import EquiLinear
 
 
 class QKVModule(nn.Module):

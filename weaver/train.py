@@ -54,8 +54,8 @@ def _main(args):
         from weaver.utils.nn.tools import train_regression as train
         from weaver.utils.nn.tools import evaluate_regression as evaluate
     elif args.graphs:
-        from weaver.utils.nn.tools_san import train_classification as train
-        from weaver.utils.nn.tools_san import evaluate_classification as evaluate
+        from weaver.utils.nn.tools_graphs import train_classification as train # before: from weaver.utils.nn.tools_san import ...
+        from weaver.utils.nn.tools_graphs import evaluate_classification as evaluate
     else:
         _logger.info("Running in classification mode")
         from weaver.utils.nn.tools import train_classification as train

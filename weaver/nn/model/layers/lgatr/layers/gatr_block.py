@@ -4,10 +4,10 @@ from typing import Optional, Tuple
 import torch
 from torch import nn
 
-from gatr.layers import SelfAttention, SelfAttentionConfig
-from gatr.layers.layer_norm import EquiLayerNorm
-from gatr.layers.mlp.config import MLPConfig
-from gatr.layers.mlp.mlp import GeoMLP
+from weaver.nn.model.layers.lgatr.layers import SelfAttention, SelfAttentionConfig
+from weaver.nn.model.layers.lgatr.layers.layer_norm import EquiLayerNorm
+from weaver.nn.model.layers.lgatr.layers.mlp.config import MLPConfig
+from weaver.nn.model.layers.lgatr.layers.mlp.mlp import GeoMLP
 
 
 class GATrBlock(nn.Module):

@@ -3,7 +3,7 @@ from typing import Tuple
 import torch
 from torch import nn
 
-from gatr.primitives.nonlinearities import gated_gelu, gated_relu, gated_sigmoid
+from weaver.nn.model.layers.lgatr.primitives.nonlinearities import gated_gelu, gated_relu, gated_sigmoid
 
 
 class ScalarGatedNonlinearity(nn.Module):

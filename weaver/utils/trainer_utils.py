@@ -100,7 +100,7 @@ def model_setup(args, data_config, dev=None, cfg=None):
     :param data_config:
     :return: model, model_info, network_module, network_options
     """
-    network_module = import_module(args.network_config, name="_network_module")
+    network_module = import_module(args.network_config, name="_network_module") # debug here 
     network_options = {k: ast.literal_eval(v) for k, v in args.network_option}
     _logger.info("Network options: %s" % str(network_options))
     if args.export_onnx:
@@ -115,7 +115,7 @@ def model_setup(args, data_config, dev=None, cfg=None):
     #     dev = torch.device("cpu")
     if args.graphs:
         model, model_info = network_module.get_model(
-            data_config, cfg=cfg, dev=dev, **network_options
+            args, data_config, cfg=cfg, dev=dev, **network_options
         )
     else:
         model, model_info = network_module.get_model(data_config, **network_options)
@@ -259,6 +259,7 @@ def train_load(args):
         infinity_mode=args.steps_per_epoch is not None,
         in_memory=args.in_memory,
         name="train" + ("" if args.local_rank is None else "_rank%d" % args.local_rank),
+        graphs=args.graphs
     )
     val_data = SimpleIterDataset(
         val_file_dict,
@@ -272,6 +273,7 @@ def train_load(args):
         infinity_mode=args.steps_per_epoch_val is not None,
         in_memory=args.in_memory,
         name="val" + ("" if args.local_rank is None else "_rank%d" % args.local_rank),
+        graphs=args.graphs
     )
     if args.graphs:
         # sys.path.append("/afs/cern.ch/work/m/mgarciam/private/ColorSinglet/")

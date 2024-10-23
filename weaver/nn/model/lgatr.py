@@ -4,8 +4,8 @@
 
 from os import path
 import sys
-from lgatr import GATr, SelfAttentionConfig, MLPConfig # gatr is folder in Dolores case? -> _init_.py in lgatr defines all of these
-from lgatr.interface import embed_point, extract_scalar, extract_point, embed_scalar
+from weaver.nn.model.layers.lgatr import GATr, SelfAttentionConfig, MLPConfig # gatr is folder in Dolores case? -> _init_.py in lgatr defines all of these
+from weaver.nn.model.layers.lgatr.interface import extract_scalar, embed_scalar, embed_vector
 import torch
 import torch.nn as nn
 import numpy as np
@@ -42,8 +42,8 @@ class LGATr(L.LightningModule):
 
     def __init__(
         self,
-        args,
         dev,
+        args,
         input_dim: int = 35,
         output_dim: int = 4,
         n_postgn_dense_blocks: int = 3,
@@ -70,7 +70,7 @@ class LGATr(L.LightningModule):
             out_s_channels=14, #adjust this?
             hidden_s_channels=hidden_s_channels,
             num_blocks=blocks,
-            attention=SelfAttentionConfig(),  # Use default parameters for attention
+            attention=SelfAttentionConfig(), # Use default parameters for attention
             mlp=MLPConfig(),  # Use default parameters for MLP
         )
         # self.ScaledGooeyBatchNorm2_1 = nn.BatchNorm1d(self.input_dim, momentum=0.01)
@@ -90,6 +90,8 @@ class LGATr(L.LightningModule):
         outputs : torch.Tensor with shape (*batch_dimensions, 1)
             Model prediction: a single scalar for the whole point cloud.
         """
+        print("inputs size: ", g.pos.size()) # should be four vectors
+        print("scalar inputs size: ", g.x.size()) # 33 scalers (e.g track params, pid, etc)
         inputs = g.pos
         # TODO move this to the other type of scalar with more channels
         scalar_inputs = g.x
@@ -121,10 +123,10 @@ class LGATr(L.LightningModule):
 
     def embed_into_ga(self, inputs, scalar_inputs):
 
-        # inputs = inputs.unsqueeze(0)
+        #inputs = inputs.unsqueeze(0)
 
         # Embed point cloud in PGA
-        multivector = embed_point(inputs)
+        multivector = embed_vector(inputs) # ATTENTION: this was embed_point before, that doesn't exist for lgatr anymore 
         embedded_inputs = multivector.unsqueeze(-2)  # (B*num_points, 1, 16)
         scalars = scalar_inputs  # [B*num_points,channels]
 

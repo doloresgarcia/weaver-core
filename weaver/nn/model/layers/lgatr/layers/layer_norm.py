@@ -5,7 +5,7 @@ from typing import Tuple
 import torch
 from torch import nn
 
-from gatr.primitives import equi_layer_norm
+from weaver.nn.model.layers.lgatr.primitives import equi_layer_norm
 
 
 class EquiLayerNorm(nn.Module):
