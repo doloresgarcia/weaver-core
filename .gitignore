@@ -137,3 +137,6 @@ model_weights_tc_match/
 model_weights_tc_match_3/
 model_weights_tc_match_longerTraining/
 model_weights_fastsimCLD240/
+
+wandb/
+wandb/run-20241021_094813-plwe1j21/run-plwe1j21.wandb
