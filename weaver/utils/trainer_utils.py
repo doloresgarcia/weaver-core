@@ -304,7 +304,7 @@ def train_load(args):
         pin_memory=True,
         num_workers=min(args.num_workers, int(len(train_files) * args.file_fraction)),
         persistent_workers=args.num_workers > 0 and args.steps_per_epoch is not None,
-        collate_fn=graph_batch_func if args.graphs else None,
+        collate_fn=graph_batch_func if args.graphs else None, 
     )
     val_loader = DataLoader(
         val_data,
@@ -376,6 +376,7 @@ def test_load(args):
             fetch_by_files=True,
             fetch_step=1,
             name="test_" + name,
+            graphs=args.graphs
         )
         test_loader = DataLoader(
             test_data,
@@ -389,7 +390,7 @@ def test_load(args):
     test_loaders = {
         name: functools.partial(get_test_loader, name) for name in file_dict
     }
-    data_config = SimpleIterDataset({}, args.data_config, for_training=False).config
+    data_config = SimpleIterDataset({}, args.data_config, for_training=False, graphs=args.graphs).config
     return test_loaders, data_config
 
 

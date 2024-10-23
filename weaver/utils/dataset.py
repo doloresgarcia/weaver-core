@@ -22,7 +22,7 @@ from .data.preprocess import (
 import sys
 
 # from weaver.nn.model.layers.graph import  graph_return_knnij
-from weaver.nn.data.data_conversion.pyg_graphs import create_graph
+from weaver.nn.data.data_conversion.pyg_graphs import create_graph_gatr
 
 
 def _finalize_inputs(table, data_config):
@@ -334,12 +334,15 @@ class _SimpleIter(object):
         # observers / monitor variables
         Z = {k: self.table[k][i].copy() for k in self._data_config.z_variables}
 
-        #graph, y_g = create_graph([X, y])
-        #output = [graph, y_g]
+        # check if data should be returned as graph or not 
+        if self._graphs: 
+            graph, y_g = create_graph_gatr([X, y])
+            output = [graph, y_g]
+            return output
+        else:
 
-        return X, y, Z, y_check
+            return X, y, Z, y_check
 
-        #return output
 
 
 class SimpleIterDataset(torch.utils.data.IterableDataset):
@@ -384,6 +387,7 @@ class SimpleIterDataset(torch.utils.data.IterableDataset):
         infinity_mode=False,
         in_memory=False,
         name="",
+        graphs=False # build grph or not
     ):
         self._iters = {} if infinity_mode or in_memory else None
         _init_args = set(self.__dict__.keys())
@@ -396,6 +400,7 @@ class SimpleIterDataset(torch.utils.data.IterableDataset):
         self._infinity_mode = infinity_mode
         self._in_memory = in_memory
         self._name = name
+        self._graphs = graphs
 
         # ==== sampling parameters ====
         self._sampler_options = {

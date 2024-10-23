@@ -20,6 +20,43 @@ from torch_geometric.utils.num_nodes import maybe_num_nodes
 import dgl
 
 
+def create_graph_gatr(example):
+    # print(example[0].keys())
+    seq_len = np.int32(np.sum(example[0]["pf_mask"]))
+    pf_points = torch.permute(
+        torch.tensor(example[0]["pf_points"][:, 0:seq_len]), (1, 0)
+    )
+
+    pf_features = torch.permute(
+        torch.tensor(example[0]["pf_features"][:, 0:seq_len]), (1, 0)
+    )
+    pf_vectors = torch.permute(
+        torch.tensor(example[0]["pf_vectors"][:, 0:seq_len]), (1, 0)
+    )
+    r = pf_vectors[:, 1]
+    coordinates = to_car(pf_points[:, 0], pf_points[:, 1], r)
+    # pf_mask = torch.permute(torch.tensor(example[0]["pf_mask"][:, 0:seq_len]), (1, 0))
+
+    y = torch.tensor(example[1]["_label_"])
+
+    # g = dgl.DGLGraph()
+    # g.add_nodes(pf_features.shape[0])
+    # g.ndata["pf_features"] = pf_features
+    # g.ndata["coordinates"] = coordinates
+    data = Data(x=pf_features, pos=coordinates, y=y)
+
+    return data, y.view(-1)
+
+
+def to_car(theta, phi, r):
+    # theta [0,pi]
+    # phi [0,2pi] - ATTENTION: FULL SIM HAS OTHER DEFINITION (-pi, pi)
+    x = r * torch.sin(theta) * torch.cos(phi)
+    y = r * torch.sin(theta) * torch.sin(phi)
+    z = r * torch.cos(theta)
+    xyz = torch.cat((x.view(-1, 1), y.view(-1, 1), z.view(-1, 1)), dim=1)
+    return xyz
+
 def create_graph(example):
     # print(example[0].keys())
     seq_len = np.int32(np.sum(example[0]["pf_mask"]))
