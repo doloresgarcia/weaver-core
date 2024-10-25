@@ -8,152 +8,152 @@ preprocess:
     pfcand_thetarel:
       length: 75
       pad_mode: wrap
-      center: 0.2443379908800125
-      scale: 1.7176753275883951
+      center: 0.3502974212169647
+      scale: 1.6255861489076686
       min: -5
       max: 5
       pad_value: 0
     pfcand_phirel:
       length: 75
       pad_mode: wrap
-      center: -0.0015007411711849272
-      scale: 0.47031244444140946
+      center: -0.002343845320865512
+      scale: 0.4691703819707972
       min: -5
       max: 5
       pad_value: 0
     pfcand_erel_log:
       length: 75
       pad_mode: wrap
-      center: -1.6563645005226135
-      scale: 1.6948690991366957
+      center: -1.8001859188079834
+      scale: 1.59356358219925
       min: -5
       max: 5
       pad_value: 0
     pfcand_dptdpt:
       length: 75
       pad_mode: wrap
-      center: 4.928546245707051e-14
-      scale: 0.1111111111111105
+      center: -9.0
+      scale: 0.11111111111111001
       min: -5
       max: 5
       pad_value: 0
     pfcand_detadeta:
       length: 75
       pad_mode: wrap
-      center: 1.7333565693888886e-07
-      scale: 0.11111110897116477
+      center: -9.0
+      scale: 0.1111111103878144
       min: -5
       max: 5
       pad_value: 0
     pfcand_dphidphi:
       length: 75
       pad_mode: wrap
-      center: 1.3331332127108908e-07
-      scale: 0.11111110946526766
+      center: -9.0
+      scale: 0.11111107868135535
       min: -5
       max: 5
       pad_value: 0
     pfcand_dxydxy:
       length: 75
       pad_mode: wrap
-      center: 3.209427813999355e-05
-      scale: 0.11111071488686801
+      center: -9.0
+      scale: 0.11110577137444812
       min: -5
       max: 5
       pad_value: 0
     pfcand_dzdz:
       length: 75
       pad_mode: wrap
-      center: 3.985850344179198e-05
-      scale: 0.11111061903300098
+      center: -9.0
+      scale: 0.11111063292062039
       min: -5
       max: 5
       pad_value: 0
     pfcand_dxydz:
       length: 75
       pad_mode: wrap
-      center: -5.580957804340869e-06
-      scale: 0.11111118001186747
+      center: -9.0
+      scale: 0.11111103565892788
       min: -5
       max: 5
       pad_value: 0
     pfcand_dphidxy:
       length: 75
       pad_mode: wrap
-      center: -0.0006088820227887481
-      scale: 0.11111862868171125
+      center: -9.0
+      scale: 0.11111118701683556
       min: -5
       max: 5
       pad_value: 0
     pfcand_dlambdadz:
       length: 75
       pad_mode: wrap
-      center: -0.0012467484921216965
-      scale: 0.11112650520031037
+      center: -9.0
+      scale: 0.1111111119607265
       min: -5
       max: 5
       pad_value: 0
     pfcand_dxyc:
       length: 75
       pad_mode: wrap
-      center: -3.210693222399641e-07
-      scale: 0.11111111507493004
+      center: -9.0
+      scale: 0.11111111108126137
       min: -5
       max: 5
       pad_value: 0
     pfcand_dxyctgtheta:
       length: 75
       pad_mode: wrap
-      center: -4.422751374022482e-07
-      scale: 0.11111111657129825
+      center: -9.0
+      scale: 0.11111111114081128
       min: -5
       max: 5
       pad_value: 0
     pfcand_phic:
       length: 75
       pad_mode: wrap
-      center: 1.3308840249477705e-12
-      scale: 0.11111111111109469
+      center: -9.0
+      scale: 0.11111111111115313
       min: -5
       max: 5
       pad_value: 0
     pfcand_phidz:
       length: 75
       pad_mode: wrap
-      center: -5.188996965443948e-07
-      scale: 0.11111111751728057
+      center: -9.0
+      scale: 0.1111111111074764
       min: -5
       max: 5
       pad_value: 0
     pfcand_phictgtheta:
       length: 75
       pad_mode: wrap
-      center: -4.5606707743672814e-08
-      scale: 0.1111111116741569
+      center: -9.0
+      scale: 0.11111111049223013
       min: -5
       max: 5
       pad_value: 0
     pfcand_cdz:
       length: 75
       pad_mode: wrap
-      center: -4.861188784843762e-08
-      scale: 0.11111111171125788
+      center: -9.0
+      scale: 0.11111111111018682
       min: -5
       max: 5
       pad_value: 0
     pfcand_cctgtheta:
       length: 75
       pad_mode: wrap
-      center: -2.8196818213643837e-09
-      scale: 0.11111111114592201
+      center: -9.0
+      scale: 0.11111111111112591
       min: -5
       max: 5
       pad_value: 0
     pfcand_mtof:
       length: 75
       pad_mode: wrap
-      center: 0.0
-      scale: 1.0
+      center: 0.07013199478387833
+      scale: 5.017327072749531
       min: -5
       max: 5
       pad_value: 0
@@ -161,7 +161,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: 0.0
-      scale: 1.0
+      scale: 0.7165127315733183
       min: -5
       max: 5
       pad_value: 0
@@ -192,7 +192,7 @@ preprocess:
     pfcand_isChargedHad:
       length: 75
       pad_mode: wrap
-      center: 1.0
+      center: 0.0
       scale: 1.0
       min: -5
       max: 5
@@ -216,64 +216,64 @@ preprocess:
     pfcand_dxy:
       length: 75
       pad_mode: wrap
-      center: -0.044818757101893425
-      scale: 0.11166719833761583
+      center: -9.0
+      scale: 0.11104009581829438
       min: -5
       max: 5
       pad_value: 0
     pfcand_dz:
       length: 75
       pad_mode: wrap
-      center: -0.068024892359972
-      scale: 0.11195732051969591
+      center: -9.0
+      scale: 0.11108384116875328
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagSip2dVal:
       length: 75
       pad_mode: wrap
-      center: -0.02649981901049614
-      scale: 0.11143923550795877
+      center: -9.0
+      scale: 0.11100884018528344
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagSip2dSig:
       length: 75
       pad_mode: wrap
-      center: -1.2811756134033203
-      scale: 0.0050322358895126835
+      center: -9.0
+      scale: 0.10340292585536623
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagSip3dVal:
       length: 75
       pad_mode: wrap
-      center: -0.07618467509746552
-      scale: 0.11205969236156531
+      center: -9.0
+      scale: 0.11100345064517615
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagSip3dSig:
       length: 75
       pad_mode: wrap
-      center: -1.5297808051109314
-      scale: 0.00503853930356193
+      center: -9.0
+      scale: 0.10326706901135856
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagJetDistVal:
       length: 75
       pad_mode: wrap
-      center: -0.04256449639797211
-      scale: 0.11163909576550932
+      center: -9.0
+      scale: 0.11106665421741556
       min: -5
       max: 5
       pad_value: 0
     pfcand_btagJetDistSig:
       length: 75
       pad_mode: wrap
-      center: -0.9458969235420227
-      scale: 0.0050237597946719715
+      center: -9.0
+      scale: 0.10776562386550714
       min: -5
       max: 5
       pad_value: 0
@@ -281,7 +281,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: 22.0
-      scale: 0.004291845493562232
+      scale: 0.045454545454545456
       min: -5
       max: 5
       pad_value: 0
@@ -378,13 +378,13 @@ inputs:
 labels:
   type: simple
   value:
+  - recojet_isTAU
   - recojet_isG
   - recojet_isU
+  - recojet_isD
   - recojet_isS
   - recojet_isC
   - recojet_isB
-  - recojet_isD
-  - recojet_isTAU
 observers: []
 monitor_variables: []
 weights:
@@ -398,13 +398,13 @@ weights:
     - -10.0
     - 10.0
   reweight_classes:
+  - recojet_isTAU
   - recojet_isG
   - recojet_isU
+  - recojet_isD
   - recojet_isS
   - recojet_isC
   - recojet_isB
-  - recojet_isD
-  - recojet_isTAU
   class_weights:
   - 1
   - 1
@@ -414,17 +414,17 @@ weights:
   - 1
   - 1
   reweight_hists:
-    recojet_isG:
-    - - 0.8812294006347656
-    recojet_isU:
-    - - 0.8999885320663452
-    recojet_isS:
-    - - 0.8812697529792786
-    recojet_isC:
-    - - 0.8812403678894043
-    recojet_isB:
-    - - 0.8812294006347656
-    recojet_isD:
-    - - 0.8999999761581421
     recojet_isTAU:
-    - - 0.8855260014533997
+    - - 0.8999999761581421
+    recojet_isG:
+    - - 0.8039140105247498
+    recojet_isU:
+    - - 0.7541366219520569
+    recojet_isD:
+    - - 0.7541366219520569
+    recojet_isS:
+    - - 0.8022730350494385
+    recojet_isC:
+    - - 0.7855589985847473
+    recojet_isB:
+    - - 0.7855589985847473

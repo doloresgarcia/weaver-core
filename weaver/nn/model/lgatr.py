@@ -69,8 +69,14 @@ class LGATr(L.LightningModule):
             in_s_channels=33, #adjust this
             out_s_channels=14, #adjust this?
             hidden_s_channels=hidden_s_channels,
-            num_blocks=blocks,
-            attention=SelfAttentionConfig(), # Use default parameters for attention
+            num_blocks=1,#blocks, DEBUG
+            # default attention params: https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/gatr/layers/attention/config.py 
+            attention=SelfAttentionConfig( # tagging default: https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/config/model/gatr_tagging.yaml#L23C3-L26C20 
+                num_heads=4,
+                multi_query=False,
+                increase_hidden_channels=2,
+                head_scale=False,
+            ), # Use default parameters for attention
             mlp=MLPConfig(),  # Use default parameters for MLP
         )
         # self.ScaledGooeyBatchNorm2_1 = nn.BatchNorm1d(self.input_dim, momentum=0.01)
@@ -92,15 +98,28 @@ class LGATr(L.LightningModule):
         """
         print("inputs size: ", g.pos.size()) # should be four vectors
         print("scalar inputs size: ", g.x.size()) # 33 scalers (e.g track params, pid, etc)
+
         inputs = g.pos
         # TODO move this to the other type of scalar with more channels
         scalar_inputs = g.x
         # inputs = self.ScaledGooeyBatchNorm2_1(inputs)
         multivector, scalars = self.embed_into_ga(inputs, scalar_inputs)
+        print("multivector size: ", multivector.size())
+        print("scalars size: ", scalars.size())
         mask = self.build_attention_mask(g)
+        #print(dir(mask)) # ['__annotations__', '__class__', '__dataclass_fields__', '__dataclass_params__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_batch_sizes', '_create_block_mask', 'from_seqlens', 'from_tensor_list', 'from_tensor_lists_qkv', 'k_seqinfo', 'make_causal', 'make_causal_from_bottomright', 'materialize', 'q_seqinfo', 'split', 'split_kv', 'split_queries']
+
+        #print(mask._batch_sizes)
+        #materialized_mask = mask.materialize()
+        #print("Materialized mask size: ", materialized_mask.size())
+        #print(materialized_mask)  # Print to inspect content
+        #
+        #print("Query sequence info: ", mask.q_seqinfo)
+        #print("Key sequence info: ", mask.k_seqinfo)
+
         # Pass data through GATr
         embedded_outputs, scalar_outputs = self.gatr(
-            multivector, scalars=scalars, attention_mask=mask
+            multivector, scalars=scalars, attention_mask=mask,
         )  # (..., num_points, 1, 16)
         # assert embedded_outputs.shape[2:] == (1, 16)
 

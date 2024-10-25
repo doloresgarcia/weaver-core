@@ -387,7 +387,7 @@ class SimpleIterDataset(torch.utils.data.IterableDataset):
         infinity_mode=False,
         in_memory=False,
         name="",
-        graphs=False # build grph or not
+        graphs=False # build graph or not
     ):
         self._iters = {} if infinity_mode or in_memory else None
         _init_args = set(self.__dict__.keys())
