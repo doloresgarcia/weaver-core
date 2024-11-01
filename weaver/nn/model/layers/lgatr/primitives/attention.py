@@ -62,13 +62,6 @@ def sdp_attention(
     outputs_s : Tensor with shape (..., num_items_out, num_s_channels_out)
         Result, scalar part
     """
-    print("q_mv shape", q_mv.shape)
-    print("k_mv shape", k_mv.shape)
-    print("v_mv shape", v_mv.shape)
-    print("q_s shape", q_s.shape)
-    print("k_s shape", k_s.shape)
-    print("v_s shape", v_s.shape)
-    print("attn_mask", attn_mask)
     # Construct queries and keys by concatenating relevant MV components and aux scalars
     q = torch.cat(
         [
@@ -137,9 +130,6 @@ def scaled_dot_product_attention(
         )  # [batch, head, item, d] -> [batch, item, head, d]
         key = key.transpose(1, 2)
         value = value.transpose(1, 2)
-        print("key shape", key.shape)
-        print("query shape", query.shape)
-        print("value shape", value.shape)
         out = memory_efficient_attention(
             query.contiguous(),
             key.contiguous(),

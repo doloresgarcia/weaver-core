@@ -216,7 +216,7 @@ def evaluate_classification(
     with torch.no_grad():
         with tqdm.tqdm(test_loader) as tq:
             for g, y in tq:
-                print("batch 1 ")
+                #print("batch 1 ")
                 inputs = g.to(dev)
                 label = y.long()
                 entry_count += label.shape[0]
@@ -297,6 +297,7 @@ def evaluate_classification(
 
     scores = np.concatenate(scores)
     labels_all = np.concatenate(labels_all)
+    print("labels_all in tools_graphs.py", labels_all)
     # metric_results = evaluate_metrics(labels_all, scores, eval_metrics=eval_metrics)
 
     if logwandb and local_rank == 0:
@@ -326,9 +327,9 @@ def evaluate_classification(
 
     if for_training:
         return total_correct / count
-    else:
+    else: # here comes the evaluation
         # convert 2D labels/scores
-        if len(scores) != entry_count:
+        if len(scores) != entry_count: # this is not called 
             if len(labels_counts):
                 labels_counts = np.concatenate(labels_counts)
                 scores = ak.unflatten(scores, labels_counts)
@@ -341,7 +342,12 @@ def evaluate_classification(
                 ).transpose((1, 2))
                 for k, v in labels.items():
                     labels[k] = v.reshape((entry_count, -1))
+        else:
+            #labels = labels_all
+            #print("labels_all.items()", labels_all.items())
+            labels = {"_label_": labels_all} 
         observers = {k: _concat(v) for k, v in observers.items()}
+        print("labels in tools_graphs.py", labels)
         return total_correct / count, scores, labels, observers
 
 

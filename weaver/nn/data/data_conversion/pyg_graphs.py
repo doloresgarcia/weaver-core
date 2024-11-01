@@ -120,8 +120,6 @@ def graph_batch_func(list_graphs):
     bg = torch_geometric.data.Batch.from_data_list(list_graphs_g)
     # bg = dgl.batch(list_graphs_g)
     # bg_exp = dgl.batch(list_graphs_gexp)
-    print(f"Batch pos shape: {bg.pos.shape}, Batch x shape: {bg.x.shape}")
-
     return bg, list_y
 
 

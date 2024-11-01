@@ -333,7 +333,7 @@ def _main(args):
                     base, ext = os.path.splitext(predict_output)
                     output_path = base + "_" + name + ext
                 if output_path.endswith(".root"):
-                    save_root(args, output_path, data_config, scores, labels, observers)
+                    save_root(args, output_path, data_config, scores, labels, observers) # check this
                 else:
                     save_parquet(args, output_path, scores, labels, observers)
                 _logger.info("Written output to %s" % output_path, color="bold")

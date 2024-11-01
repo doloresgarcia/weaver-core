@@ -180,3 +180,4 @@ class GATr(nn.Module):
             additional_qk_features_s = scalars[..., self._reinsert_s_channels]
 
         return additional_qk_features_mv, additional_qk_features_s
+        

@@ -119,21 +119,11 @@ class SelfAttention(nn.Module):
         output_scalars : torch.Tensor with shape (..., num_items, channels_out, out_scalars)
             Output scalars, if scalars are provided. Otherwise None.
         """
-        print("multivectors shape in self_attention.py: ", multivectors.shape)
-        print("additional_qk_features_mv shape in self_attention.py: ", additional_qk_features_mv)
-        print("scalars shape in self_attention.py: ", scalars.shape)
-        print("additional_qk_features_s shape in self_attention.py: ", additional_qk_features_s)
 
         # Compute Q, K, V
         q_mv, k_mv, v_mv, q_s, k_s, v_s = self.qkv_module(
             multivectors, scalars, additional_qk_features_mv, additional_qk_features_s
         )
-        print("q_mv shape in self_attention.py: ", q_mv.shape)
-        print("k_mv shape in self_attention.py: ", k_mv.shape)
-        print("v_mv shape in self_attention.py: ", v_mv.shape)
-        print("q_s shape in self_attention.py: ", q_s.shape)
-        print("k_s shape in self_attention.py: ", k_s.shape)
-        print("v_s shape in self_attention.py: ", v_s.shape)
 
         # Rotary positional encoding
         q_s = self.pos_encoding(q_s)

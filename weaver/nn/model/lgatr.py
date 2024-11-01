@@ -69,7 +69,7 @@ class LGATr(L.LightningModule):
             in_s_channels=33, #adjust this
             out_s_channels=14, #adjust this?
             hidden_s_channels=hidden_s_channels,
-            num_blocks=1,#blocks, DEBUG
+            num_blocks=blocks,
             # default attention params: https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/gatr/layers/attention/config.py 
             attention=SelfAttentionConfig( # tagging default: https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/config/model/gatr_tagging.yaml#L23C3-L26C20 
                 num_heads=4,
@@ -81,7 +81,7 @@ class LGATr(L.LightningModule):
         )
         # self.ScaledGooeyBatchNorm2_1 = nn.BatchNorm1d(self.input_dim, momentum=0.01)
         # self.ScaledGooeyBatchNorm2_2 = nn.BatchNorm1d(1, momentum=0.01)
-        self.MLP_layer = MLPReadout(4 + 14, 7) #adjust this
+        self.MLP_layer = MLPReadout(1 + 14, 7) #adjust this
 
     def forward(self, g): # where do I need to define g?
         """Forward pass.
@@ -96,26 +96,15 @@ class LGATr(L.LightningModule):
         outputs : torch.Tensor with shape (*batch_dimensions, 1)
             Model prediction: a single scalar for the whole point cloud.
         """
-        print("inputs size: ", g.pos.size()) # should be four vectors
-        print("scalar inputs size: ", g.x.size()) # 33 scalers (e.g track params, pid, etc)
+        #print("inputs size: ", g.pos.size()) # should be four vectors
+        #print("scalar inputs size: ", g.x.size()) # 33 scalers (e.g track params, pid, etc)
 
         inputs = g.pos
         # TODO move this to the other type of scalar with more channels
         scalar_inputs = g.x
         # inputs = self.ScaledGooeyBatchNorm2_1(inputs)
         multivector, scalars = self.embed_into_ga(inputs, scalar_inputs)
-        print("multivector size: ", multivector.size())
-        print("scalars size: ", scalars.size())
         mask = self.build_attention_mask(g)
-        #print(dir(mask)) # ['__annotations__', '__class__', '__dataclass_fields__', '__dataclass_params__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_batch_sizes', '_create_block_mask', 'from_seqlens', 'from_tensor_list', 'from_tensor_lists_qkv', 'k_seqinfo', 'make_causal', 'make_causal_from_bottomright', 'materialize', 'q_seqinfo', 'split', 'split_kv', 'split_queries']
-
-        #print(mask._batch_sizes)
-        #materialized_mask = mask.materialize()
-        #print("Materialized mask size: ", materialized_mask.size())
-        #print(materialized_mask)  # Print to inspect content
-        #
-        #print("Query sequence info: ", mask.q_seqinfo)
-        #print("Key sequence info: ", mask.k_seqinfo)
 
         # Pass data through GATr
         embedded_outputs, scalar_outputs = self.gatr(
@@ -127,17 +116,49 @@ class LGATr(L.LightningModule):
         out = self.extract_from_ga(embedded_outputs, scalar_outputs, g)
         out = self.MLP_layer(out)
         return out
-
+    '''
     def extract_from_ga(self, multivector_outputs, scalar_outputs, g):
         # assert multivector_outputs.shape[2:] == (1, 16)
         # assert scalar_outputs.shape[2:] == (1,)
         #nodewise_outputs = extract_scalar(
         #    multivector_outputs
         #)  # (..., num_points, 1, 1)
-        scalars_from_geometry = extract_scalar(multivector)[0, :, :, 0]
-        output = torch.cat((scalars_from_geometry, scalar_outputs), dim=1)
-        # sum per batch and calculate output
+        scalars_from_geometry = extract_scalar(multivector_outputs)[:, :, :, 0] # [0, :, :, 0] # from https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/experiments/tagging/wrappers.py#L71C19-L71C33 
+        print("scalars_from_geometry raw size: ", extract_scalar(multivector_outputs).size()) # torch.Size([1, 25, 1, 1])
+        print("scalars_from_geometry size: ", scalars_from_geometry.size()) # torch.Size([25, 1]) (#bs, #scalars)
+        print("scalar_outputs size: ", scalar_outputs.size()) # torch.Size([1, 25, 14]) (#?, #bs, #scalars)
+        #scalars_from_geometry_exp = scalars_from_geometry.unsqueeze(1).expand(-1, scalar_outputs.size(1), -1)
+        output = torch.cat((scalars_from_geometry, scalar_outputs), dim=2) # dim=1; should have [batch_size, num_nodes, total_scalar_features]
+        ## sum per batch and calculate output
+        print("output size: ", output.size()) # (1, bs, 15)
+        print("g.batch size: ", g.batch.size())
         mean_per_graph = scatter(output, g.batch, dim=0, reduce="mean")
+        return mean_per_graph
+        '''
+
+    def extract_from_ga(self, multivector_outputs, scalar_outputs, g):
+        # Extract scalars from geometry and adjust dimensions if needed
+        scalars_from_geometry = extract_scalar(multivector_outputs)  # Assuming shape [batch_size, num_nodes, 1]
+        
+        # Ensure scalars_from_geometry and scalar_outputs have the same number of dimensions
+        if scalars_from_geometry.dim() < scalar_outputs.dim():
+            scalars_from_geometry = scalars_from_geometry.unsqueeze(-1)
+        elif scalars_from_geometry.dim() > scalar_outputs.dim():
+            scalars_from_geometry = scalars_from_geometry.squeeze(-1)
+
+        # Confirm compatibility for concatenation along dim=2
+        if scalars_from_geometry.size(0) != scalar_outputs.size(0) or scalars_from_geometry.size(1) != scalar_outputs.size(1):
+            raise ValueError("scalars_from_geometry and scalar_outputs have incompatible dimensions.")
+
+        # Concatenate along the last dimension to combine geometric and scalar features
+        output = torch.cat((scalars_from_geometry, scalar_outputs), dim=2)  # Expected shape: [num_nodes, total_scalar_features]
+
+        # Reshape `output` if needed to match `g.batch` length (46300)
+        output = output.view(-1, output.size(-1))  # Shape: [46300, total_scalar_features]
+
+        # Perform scatter operation with matching dimensions
+        mean_per_graph = scatter(output, g.batch, dim=0, reduce="mean")
+        
         return mean_per_graph
 
     def embed_into_ga(self, inputs, scalar_inputs):
@@ -145,7 +166,7 @@ class LGATr(L.LightningModule):
         #inputs = inputs.unsqueeze(0)
 
         # Embed point cloud in PGA
-        multivector = embed_vector(inputs) # ATTENTION: this was embed_point before, that doesn't exist for lgatr anymore 
+        multivector = embed_vector(inputs.unsqueeze(0)) # ATTENTION: this was embed_point before, that doesn't exist for lgatr anymore 
         embedded_inputs = multivector.unsqueeze(-2)  # (B*num_points, 1, 16)
         scalars = scalar_inputs  # [B*num_points,channels]
 

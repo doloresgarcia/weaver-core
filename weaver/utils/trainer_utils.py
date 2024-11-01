@@ -53,13 +53,14 @@ def save_root(args, output_path, data_config, scores, labels, observers):
     :return:
     """
     from weaver.utils.data.fileio import _write_root
-
+    print("labels in save_root", labels)
     output = {}
     if args.regression_mode:
         output[data_config.label_names[0]] = labels[data_config.label_names[0]]
         output["output"] = scores
-    else:
-        for idx, label_name in enumerate(data_config.label_value):
+    else: # classification
+        for idx, label_name in enumerate(data_config.label_value): # label_name is `recojet_isX`
+            print("data_config.label_names[0]", data_config.label_names[0]) # _label_ 
             output[label_name] = labels[data_config.label_names[0]] == idx
             output["score_" + label_name] = scores[:, idx]
     for k, v in labels.items():
@@ -74,6 +75,8 @@ def save_root(args, output_path, data_config, scores, labels, observers):
             _logger.warning("Ignoring %s, not a 1d array.", k)
             continue
         output[k] = v
+    print("output_path", output_path)
+    print("output", output)
     _write_root(output_path, output)
 
 
@@ -332,6 +335,8 @@ def test_load(args):
     :param args:
     :return: test_loaders, data_config
     """
+    if args.graphs:
+        from weaver.nn.data.data_conversion.pyg_graphs import graph_batch_func
     # keyword-based --data-test: 'a:/path/to/a b:/path/to/b'
     # split --data-test: 'a%10:/path/to/a/*'
     file_dict = {}
@@ -386,6 +391,7 @@ def test_load(args):
             batch_size=args.batch_size,
             drop_last=False,
             pin_memory=True,
+            collate_fn=graph_batch_func if args.graphs else None, 
         )
         return test_loader
 
