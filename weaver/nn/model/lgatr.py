@@ -62,12 +62,13 @@ class LGATr(L.LightningModule):
         self.input_dim = 3
         self.output_dim = 4
         self.args = args
+        out_s_channels = 10 # 14
         self.gatr = GATr(
             in_mv_channels=1,
             out_mv_channels=1,
             hidden_mv_channels=hidden_mv_channels,
             in_s_channels=33, #adjust this
-            out_s_channels=14, #adjust this?
+            out_s_channels=out_s_channels, # 14 adjust this?
             hidden_s_channels=hidden_s_channels,
             num_blocks=blocks,
             # default attention params: https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/gatr/layers/attention/config.py 
@@ -81,7 +82,11 @@ class LGATr(L.LightningModule):
         )
         # self.ScaledGooeyBatchNorm2_1 = nn.BatchNorm1d(self.input_dim, momentum=0.01)
         # self.ScaledGooeyBatchNorm2_2 = nn.BatchNorm1d(1, momentum=0.01)
-        self.MLP_layer = MLPReadout(1 + 14, 7) #adjust this
+        keep_invariance = False
+        if keep_invariance:
+            self.MLP_layer = MLPReadout(1 + out_s_channels, 7) # (1 + 14, 7)
+        else:
+            self.MLP_layer = MLPReadout(16 + out_s_channels, 7) # (16 + 10, 7)
 
     def forward(self, g): # where do I need to define g?
         """Forward pass.
@@ -116,45 +121,28 @@ class LGATr(L.LightningModule):
         out = self.extract_from_ga(embedded_outputs, scalar_outputs, g)
         out = self.MLP_layer(out)
         return out
-    '''
-    def extract_from_ga(self, multivector_outputs, scalar_outputs, g):
-        # assert multivector_outputs.shape[2:] == (1, 16)
-        # assert scalar_outputs.shape[2:] == (1,)
-        #nodewise_outputs = extract_scalar(
-        #    multivector_outputs
-        #)  # (..., num_points, 1, 1)
-        scalars_from_geometry = extract_scalar(multivector_outputs)[:, :, :, 0] # [0, :, :, 0] # from https://github.com/heidelberg-hepml/lorentz-gatr/blob/79a0150d72e5ea475d9384b3242439ac6593d255/experiments/tagging/wrappers.py#L71C19-L71C33 
-        print("scalars_from_geometry raw size: ", extract_scalar(multivector_outputs).size()) # torch.Size([1, 25, 1, 1])
-        print("scalars_from_geometry size: ", scalars_from_geometry.size()) # torch.Size([25, 1]) (#bs, #scalars)
-        print("scalar_outputs size: ", scalar_outputs.size()) # torch.Size([1, 25, 14]) (#?, #bs, #scalars)
-        #scalars_from_geometry_exp = scalars_from_geometry.unsqueeze(1).expand(-1, scalar_outputs.size(1), -1)
-        output = torch.cat((scalars_from_geometry, scalar_outputs), dim=2) # dim=1; should have [batch_size, num_nodes, total_scalar_features]
-        ## sum per batch and calculate output
-        print("output size: ", output.size()) # (1, bs, 15)
-        print("g.batch size: ", g.batch.size())
-        mean_per_graph = scatter(output, g.batch, dim=0, reduce="mean")
-        return mean_per_graph
-        '''
 
-    def extract_from_ga(self, multivector_outputs, scalar_outputs, g):
+
+    def extract_from_ga(self, multivector_outputs, scalar_outputs, g, keep_invariance=False):
         # Extract scalars from geometry and adjust dimensions if needed
-        scalars_from_geometry = extract_scalar(multivector_outputs)  # Assuming shape [batch_size, num_nodes, 1]
-        
-        # Ensure scalars_from_geometry and scalar_outputs have the same number of dimensions
-        if scalars_from_geometry.dim() < scalar_outputs.dim():
-            scalars_from_geometry = scalars_from_geometry.unsqueeze(-1)
-        elif scalars_from_geometry.dim() > scalar_outputs.dim():
-            scalars_from_geometry = scalars_from_geometry.squeeze(-1)
+        if keep_invariance:
+            scalars_from_geometry = extract_scalar(multivector_outputs)  # Assuming shape [batch_size, num_nodes, 1]
+            
+            # Ensure scalars_from_geometry and scalar_outputs have the same number of dimensions
+            if scalars_from_geometry.dim() < scalar_outputs.dim():
+                scalars_from_geometry = scalars_from_geometry.unsqueeze(-1)
+            elif scalars_from_geometry.dim() > scalar_outputs.dim():
+                scalars_from_geometry = scalars_from_geometry.squeeze(-1)
 
-        # Confirm compatibility for concatenation along dim=2
-        if scalars_from_geometry.size(0) != scalar_outputs.size(0) or scalars_from_geometry.size(1) != scalar_outputs.size(1):
-            raise ValueError("scalars_from_geometry and scalar_outputs have incompatible dimensions.")
 
-        # Concatenate along the last dimension to combine geometric and scalar features
-        output = torch.cat((scalars_from_geometry, scalar_outputs), dim=2)  # Expected shape: [num_nodes, total_scalar_features]
+            # Concatenate along the last dimension to combine geometric and scalar features
+            output = torch.cat((scalars_from_geometry, scalar_outputs), dim=2)  # Expected shape: [num_nodes, total_scalar_features]
 
-        # Reshape `output` if needed to match `g.batch` length (46300)
-        output = output.view(-1, output.size(-1))  # Shape: [46300, total_scalar_features]
+            # Reshape `output` if needed to match `g.batch` length (46300)
+            output = output.view(-1, output.size(-1))  # Shape: [46300, total_scalar_features]
+        else: # break invariance
+            output = torch.cat((scalar_outputs, multivector_outputs.squeeze(2)), dim=2)
+            output = output.view(-1, output.size(-1))
 
         # Perform scatter operation with matching dimensions
         mean_per_graph = scatter(output, g.batch, dim=0, reduce="mean")
