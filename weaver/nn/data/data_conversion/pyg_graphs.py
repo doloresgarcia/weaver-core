@@ -33,20 +33,72 @@ def create_graph_gatr(example):
     pf_vectors = torch.permute(
         torch.tensor(example[0]["pf_vectors"][:, 0:seq_len]), (1, 0)
     )
-    r = pf_vectors[:, 1]
-    coordinates = to_car(pf_points[:, 0], pf_points[:, 1], r) # p_x, p_y, p_z
-    # pf_mask = torch.permute(torch.tensor(example[0]["pf_mask"][:, 0:seq_len]), (1, 0))
-    four_mom = torch.cat((pf_vectors[:,0].view(-1, 1), coordinates), dim=1) # E, px, py, pz
+    four_mom = built_four_vector(pf_features, pf_points, pf_vectors)
 
     y = torch.tensor(example[1]["_label_"])
 
-    # g = dgl.DGLGraph()
-    # g.add_nodes(pf_features.shape[0])
-    # g.ndata["pf_features"] = pf_features
-    # g.ndata["coordinates"] = coordinates
     data = Data(x=pf_features, pos=four_mom, y=y)
 
     return data, y.view(-1)
+
+def built_four_vector(pf_features, pf_points, pf_vectors):
+    '''
+    I can not just use p AND E from fast sim, because then, the network can learn PID from the p and E values (sensitive to masses).
+    Therefore 
+    - charged particles: only use p, and calculate E from p and dummy m
+    - neutral particles: only use E, and calculate p from E and m
+    '''
+    # extract features
+    charges = pf_features[:, example[0]["pf_features"].vars.index("pfcand_charge")]
+    theta_rels = pf_features[:, example[0]["pf_features"].vars.index("pfcand_thetarel")]
+    phi_rels = pf_features[:, example[0]["pf_features"].vars.index("pfcand_phirel")]
+    energies = pf_points[:, example[0]["pf_points"].vars.index("pfcand_e")]
+
+    # Flags for particle types
+    is_mu = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isMu")].bool()
+    is_el = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isEl")].bool()
+    is_chargedhad = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isChargedHad")].bool()
+    is_gamma = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isGamma")].bool()
+    is_neutralhad = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isNeutralHad")].bool()
+
+    # Mask for charged and neutral particles
+    charged_mask = charges != 0
+    neutral_mask = charges == 0
+
+    # Compute mass values using masks
+    masses_charged = (
+        is_mu * masses["Mu"]
+        + is_el * masses["El"]
+        + is_chargedhad * masses["ChargedHad"]
+    ).float()
+
+    masses_neutral = (
+        is_gamma * masses["Gamma"]
+        + is_neutralhad * masses["NeutralHad"]
+    ).float()
+
+    # Calculate momentum (p) and energy (E) based on particle type
+
+    # Charged particles: p_i via angles, E from p and m_i 
+    momentum = pf_vectors[:, 1]
+    coordinates = to_car(pf_points[:, 0], pf_points[:, 1], momentum) # p_x, p_y, p_z
+    E_charged = torch.sqrt(momentum[charged_mask] ** 2 + masses_charged[charged_mask] ** 2)
+
+    # Neutral particles: Photon (p = E), NeutralHadron (p = sqrt(E^2 - m^2))
+    p_neutral = torch.zeros_like(energies[neutral_mask])
+    p_neutral[is_gamma[neutral_mask]] = energies[neutral_mask][is_gamma[neutral_mask]]
+    p_neutral[is_neutralhad[neutral_mask]] = torch.sqrt(energies[neutral_mask][is_neutralhad[neutral_mask]] ** 2 - masses_neutral[neutral_mask][is_neutralhad[neutral_mask]] ** 2)
+    coordinates[neutral_mask] = to_car(theta_rels[neutral_mask], phi_rels[neutral_mask], p_neutral)
+
+    E_neutral = energies[neutral_mask]
+
+    # build four-momentum tensor
+    four_mom = torch.zeros((seq_len, 4))
+    four_mom[charged_mask, 0] = E_charged
+    four_mom[neutral_mask, 0] = E_neutral
+    four_mom[:, 1:] = coordinates
+
+    return four_mom
 
 
 def to_car(theta, phi, r):
