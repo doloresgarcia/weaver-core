@@ -20,7 +20,7 @@ from torch_geometric.utils.num_nodes import maybe_num_nodes
 import dgl
 
 
-def create_graph_gatr(example):
+def create_graph_gatr(example, input_var_names):
     # print(example[0].keys())
     seq_len = np.int32(np.sum(example[0]["pf_mask"]))
     pf_points = torch.permute(
@@ -33,7 +33,7 @@ def create_graph_gatr(example):
     pf_vectors = torch.permute(
         torch.tensor(example[0]["pf_vectors"][:, 0:seq_len]), (1, 0)
     )
-    four_mom = built_four_vector(pf_features, pf_points, pf_vectors)
+    four_mom = built_four_vector(pf_features, pf_points, pf_vectors, example, seq_len, input_var_names)
 
     y = torch.tensor(example[1]["_label_"])
 
@@ -41,25 +41,37 @@ def create_graph_gatr(example):
 
     return data, y.view(-1)
 
-def built_four_vector(pf_features, pf_points, pf_vectors):
+def built_four_vector(pf_features, pf_points, pf_vectors, example, seq_len, pf_feature_vars):
     '''
     I can not just use p AND E from fast sim, because then, the network can learn PID from the p and E values (sensitive to masses).
     Therefore 
     - charged particles: only use p, and calculate E from p and dummy m
     - neutral particles: only use E, and calculate p from E and m
     '''
+    masses = {
+        "Mu": 0.10566,  # Muon mass
+        "El": 0.000511, # Electron mass
+        "ChargedHad": 0.13957,  # Charged pion (approx)
+        "NeutralHad": 0.93957,  # Neutron mass
+        "Gamma": 0.0  # Photon has zero mass
+    }
+
+
+    #Create a dictionary mapping each variable to its column index in `pf_features`
+    var_indices = {name: idx for idx, name in enumerate(pf_feature_vars)}
+
     # extract features
-    charges = pf_features[:, example[0]["pf_features"].vars.index("pfcand_charge")]
-    theta_rels = pf_features[:, example[0]["pf_features"].vars.index("pfcand_thetarel")]
-    phi_rels = pf_features[:, example[0]["pf_features"].vars.index("pfcand_phirel")]
-    energies = pf_points[:, example[0]["pf_points"].vars.index("pfcand_e")]
+    charges = pf_features[:, var_indices["pfcand_charge"]]
+    theta_rels = pf_features[:, var_indices["pfcand_thetarel"]]
+    phi_rels = pf_features[:, var_indices["pfcand_phirel"]]
+    energies = pf_vectors[:,0] # be careful if this is the case in .yaml file!! (`pfcand_e`)
 
     # Flags for particle types
-    is_mu = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isMu")].bool()
-    is_el = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isEl")].bool()
-    is_chargedhad = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isChargedHad")].bool()
-    is_gamma = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isGamma")].bool()
-    is_neutralhad = pf_features[:, example[0]["pf_features"].vars.index("pfcand_isNeutralHad")].bool()
+    is_mu = pf_features[:, var_indices["pfcand_isMu"]].bool()
+    is_el = pf_features[:, var_indices["pfcand_isEl"]].bool()
+    is_chargedhad = pf_features[:, var_indices["pfcand_isChargedHad"]].bool()
+    is_gamma = pf_features[:, var_indices["pfcand_isGamma"]].bool()
+    is_neutralhad = pf_features[:, var_indices["pfcand_isNeutralHad"]].bool()
 
     # Mask for charged and neutral particles
     charged_mask = charges != 0

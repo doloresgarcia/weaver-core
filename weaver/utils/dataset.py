@@ -336,7 +336,12 @@ class _SimpleIter(object):
 
         # check if data should be returned as graph or not 
         if self._graphs: 
-            graph, y_g = create_graph_gatr([X, y])
+            # get all input variable names 
+            params = self._data_config.preprocess['params']
+            input_var_names = list(params.keys())
+
+
+            graph, y_g = create_graph_gatr([X, y], input_var_names)
             output = [graph, y_g]
             return output
         else:
