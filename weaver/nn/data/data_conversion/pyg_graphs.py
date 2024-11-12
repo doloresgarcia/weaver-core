@@ -99,8 +99,12 @@ def built_four_vector(pf_features, pf_points, pf_vectors, example, seq_len, pf_f
     # Neutral particles: Photon (p = E), NeutralHadron (p = sqrt(E^2 - m^2))
     p_neutral = torch.zeros_like(energies[neutral_mask])
     p_neutral[is_gamma[neutral_mask]] = energies[neutral_mask][is_gamma[neutral_mask]]
-    p_neutral[is_neutralhad[neutral_mask]] = torch.sqrt(energies[neutral_mask][is_neutralhad[neutral_mask]] ** 2 - masses_neutral[neutral_mask][is_neutralhad[neutral_mask]] ** 2)
+    E_n = energies[neutral_mask][is_neutralhad[neutral_mask]]
+    m_n = masses_neutral[neutral_mask][is_neutralhad[neutral_mask]]
+    in_sqrt = torch.where( E_n**2> m_n ** 2, E_n**2 - m_n ** 2, E_n**2) # if E^2 < m^2, then set p to E  to avoid negative values in sqrt 
+    p_neutral[is_neutralhad[neutral_mask]] = torch.sqrt(in_sqrt)
     coordinates[neutral_mask] = to_car(theta_rels[neutral_mask], phi_rels[neutral_mask], p_neutral)
+
 
     E_neutral = energies[neutral_mask]
 
@@ -109,6 +113,8 @@ def built_four_vector(pf_features, pf_points, pf_vectors, example, seq_len, pf_f
     four_mom[charged_mask, 0] = E_charged
     four_mom[neutral_mask, 0] = E_neutral
     four_mom[:, 1:] = coordinates
+
+    #print("four_mom", four_mom.shape, four_mom[0]) # sometimes zeros... tensor([0.1987, 0.0000, -0.0000, 0.0000])
 
     return four_mom
 
