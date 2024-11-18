@@ -20,7 +20,7 @@ from torch_geometric.utils.num_nodes import maybe_num_nodes
 import dgl
 
 
-def create_graph_gatr(example, input_var_names):
+def create_graph_gatr(example, input_var_names, master_node=False):
     # print(example[0].keys())
     seq_len = np.int32(np.sum(example[0]["pf_mask"]))
     pf_points = torch.permute(
@@ -35,9 +35,37 @@ def create_graph_gatr(example, input_var_names):
     )
     four_mom = built_four_vector(pf_features, pf_points, pf_vectors, example, seq_len, input_var_names)
 
-    y = torch.tensor(example[1]["_label_"])
+    y = torch.tensor(example[1]["_label_"]) # 7 classes
 
-    data = Data(x=pf_features, pos=four_mom, y=y)
+    # add a global node to the graph that is fully connected and has trainable weights to represent the global state -> classification via this node
+    master_node = True
+    if master_node:
+        #print("pf_features", pf_features.shape) # torch.Size([25, 33])
+        num_nodes = pf_features.size(0)
+        token_dim = pf_features.shape[1]
+        edge_index = torch.combinations(torch.arange(num_nodes), r=2).T
+
+        mn_features = torch.zeros((1, token_dim)) # (1, 33) initialize master node features as zeros
+        pf_features = torch.cat((pf_features, mn_features), dim=0) # add master node to features # (nodes+1, 33)
+        special_node_index = num_nodes
+        new_edges = torch.cat([
+            torch.stack([torch.full((num_nodes,), special_node_index, dtype=torch.long), torch.arange(num_nodes)]),
+            torch.stack([torch.arange(num_nodes), torch.full((num_nodes,), special_node_index, dtype=torch.long)])
+        ], dim=1)  # Bidirectional edges to/from the special node
+
+        # Combine the old edges and the new edges
+        edge_index = torch.cat([edge_index, new_edges], dim=1)
+
+        # Add the master node to the four-momentum tensor
+        mn_position = torch.zeros((1, 4))  # (1, 4) initialize master node position as zeros
+        four_mom = torch.cat((four_mom, mn_position), dim=0)  # Add master node position
+
+        # Create initial graph
+        data = Data(x=pf_features, pos=four_mom, edge_index=edge_index, y=y) # pf_features: (nodes+1, 33), four_mom: (nodes+1, 4), edge_index: (2, x)
+    else:
+
+        # Create initial graph
+        data = Data(x=pf_features, pos=four_mom, y=y)
 
     return data, y.view(-1)
 

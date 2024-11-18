@@ -58,16 +58,27 @@ class LGATr(L.LightningModule):
     ):
         super().__init__()
 
+        # constum options - implement as outside options later? 
+        self.keep_invariance = False
+        self.master_node = True
+
         self.criterion = nn.CrossEntropyLoss()
         self.input_dim = 3
         self.output_dim = 4
         self.args = args
-        out_s_channels = 10 # 14
+        out_s_channels = 10 
+        if self.keep_invariance:
+            out_s_channels = 14
+        in_s_channels = 33 # HOW TO GET THIS FROM YMAL FILE??
+    
+        if self.master_node:
+            in_s_channels += 1
+
         self.gatr = GATr(
             in_mv_channels=1,
             out_mv_channels=1,
             hidden_mv_channels=hidden_mv_channels,
-            in_s_channels=33, #adjust this
+            in_s_channels=33, #adjust this - DO I NEED TO ADJUST THIS EVERY TIME I CHANGE MY INPUTS?!! AKA YMAL FILE????
             out_s_channels=out_s_channels, # 14 adjust this?
             hidden_s_channels=hidden_s_channels,
             num_blocks=blocks,
@@ -82,8 +93,8 @@ class LGATr(L.LightningModule):
         )
         # self.ScaledGooeyBatchNorm2_1 = nn.BatchNorm1d(self.input_dim, momentum=0.01)
         # self.ScaledGooeyBatchNorm2_2 = nn.BatchNorm1d(1, momentum=0.01)
-        keep_invariance = False
-        if keep_invariance:
+        
+        if self.keep_invariance:
             self.MLP_layer = MLPReadout(1 + out_s_channels, 7) # (1 + 14, 7)
         else:
             self.MLP_layer = MLPReadout(16 + out_s_channels, 7) # (16 + 10, 7)
@@ -101,21 +112,16 @@ class LGATr(L.LightningModule):
         outputs : torch.Tensor with shape (*batch_dimensions, 1)
             Model prediction: a single scalar for the whole point cloud.
         """
-        #print("inputs size: ", g.pos.size()) # should be four vectors
-        #print("scalar inputs size: ", g.x.size()) # 33 scalers (e.g track params, pid, etc)
+        inputs = g.pos # four vectors / four momenta
+        scalar_inputs = g.x # 33 scalars
 
-        inputs = g.pos
-        # TODO move this to the other type of scalar with more channels
-        scalar_inputs = g.x
-        # inputs = self.ScaledGooeyBatchNorm2_1(inputs)
-        multivector, scalars = self.embed_into_ga(inputs, scalar_inputs)
+        multivector, scalars = self.embed_into_ga(inputs, scalar_inputs) # returns torch.Size([1, 47521, 1, 16]), torch.Size([47521, 33])
         mask = self.build_attention_mask(g)
 
         # Pass data through GATr
         embedded_outputs, scalar_outputs = self.gatr(
             multivector, scalars=scalars, attention_mask=mask,
         )  # (..., num_points, 1, 16)
-        # assert embedded_outputs.shape[2:] == (1, 16)
 
         # Extract position
         out = self.extract_from_ga(embedded_outputs, scalar_outputs, g)
@@ -123,9 +129,36 @@ class LGATr(L.LightningModule):
         return out
 
 
-    def extract_from_ga(self, multivector_outputs, scalar_outputs, g, keep_invariance=False):
+    def extract_from_ga(self, multivector_outputs, scalar_outputs, g):
+        '''
+        Extract information from graph to use for classification. To keep invariance, use scalar information from geometry only.
+
+        Parameters
+        ----------
+        multivector_outputs: torch.Size([1, 47649, 1, 16])
+        scalar_outputs: torch.Size([1, 47649, 10])
+
+        ''' 
+        if self.master_node: # breaks invariance
+            # Find the last node of each batch
+            _, last_node_indices = torch.unique_consecutive(g.batch, return_inverse=False, return_counts=True) # count how many nodes are in each batch (aka how many same numbers in a row; same number = same batch)
+            last_node_indices = torch.cumsum(last_node_indices, dim=0) - 1  # cummulative sum of the number of nodes in each batch; subtract 1 to get the last node index
+
+            # Extract the features for the last nodes
+            last_multivector_outputs = multivector_outputs[0, last_node_indices]  # Shape: [Num Batches, 1, 16]
+            last_scalar_outputs = scalar_outputs[0, last_node_indices] # Shape: [Num Batches, 10]
+
+            # Concatenate the features of the last nodes (breaks invariance)
+            feautres_of_master_node = torch.cat(
+                [last_scalar_outputs, last_multivector_outputs.view(last_multivector_outputs.size(0), -1)],
+                dim=-1
+            )  # Shape: [Num Batches, Scalar Features + Flattened Multivector Features]
+
+            return feautres_of_master_node
+
+
         # Extract scalars from geometry and adjust dimensions if needed
-        if keep_invariance:
+        elif self.keep_invariance:
             scalars_from_geometry = extract_scalar(multivector_outputs)  # Assuming shape [batch_size, num_nodes, 1]
             
             # Ensure scalars_from_geometry and scalar_outputs have the same number of dimensions
@@ -144,7 +177,6 @@ class LGATr(L.LightningModule):
             output = torch.cat((scalar_outputs, multivector_outputs.squeeze(2)), dim=2)
             output = output.view(-1, output.size(-1))
 
-        # Perform scatter operation with matching dimensions
         mean_per_graph = scatter(output, g.batch, dim=0, reduce="mean")
         
         return mean_per_graph
