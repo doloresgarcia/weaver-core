@@ -427,14 +427,15 @@ def onnx(args):
         torch.ones(model_info["input_shapes"][k], dtype=torch.float32)
         for k in model_info["input_names"]
     )
-    torch.onnx.export(
+    torch.onnx.export( # runs until here
         model,
         inputs,
         args.export_onnx,
         input_names=model_info["input_names"],
         output_names=model_info["output_names"],
         dynamic_axes=model_info.get("dynamic_axes", None),
-        opset_version=13,
+        opset_version=17,
+        verbose=True,
     )
     _logger.info("ONNX model saved to %s", args.export_onnx)
 

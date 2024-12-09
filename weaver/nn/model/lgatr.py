@@ -69,16 +69,13 @@ class LGATr(L.LightningModule):
         out_s_channels = 10 
         if self.keep_invariance:
             out_s_channels = 14
-        in_s_channels = 33 # HOW TO GET THIS FROM YMAL FILE??
-    
-        if self.master_node:
-            in_s_channels += 1
+        in_s_channels = 33 # HOW TO GET THIS FROM YMAL FILE?? #adjust this - DO I NEED TO ADJUST THIS EVERY TIME I CHANGE MY INPUTS?!! AKA YMAL FILE????
 
         self.gatr = GATr(
             in_mv_channels=1,
             out_mv_channels=1,
             hidden_mv_channels=hidden_mv_channels,
-            in_s_channels=33, #adjust this - DO I NEED TO ADJUST THIS EVERY TIME I CHANGE MY INPUTS?!! AKA YMAL FILE????
+            in_s_channels=in_s_channels,
             out_s_channels=out_s_channels, # 14 adjust this?
             hidden_s_channels=hidden_s_channels,
             num_blocks=blocks,
