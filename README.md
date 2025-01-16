@@ -29,10 +29,12 @@
 <!-- /TOC -->
 ## Set up your container
 
-Weaver can be used with a conda envirorment but using a container allows to speed up this process. Access the machine with gpus you will use for training and 
-* Create a .sif file: singularity pull docker://dologarcia/gatr:v0(optional) 
-* Export the cache: export APPTAINER_CACHEDIR=/mnt/proj1/dd-24-97/cache/
-* Then activate with the necessary binding like: singularity  shell -B /mnt/proj1/dd-24-97/ --nv colorsinglet.sif
+Weaver can be used with a conda envirorment but using a container allows to speed up this process. Access the machine with gpus you will use for training and check if singularity is installed. In some vms, singularity can be sourced with commands such as ```ml apptainer``` (for karolina).
+* Export the cache: ```export APPTAINER_CACHEDIR=/path_to_cache/```
+the ```-B ``` allows to mount a directory to the container for example afs
+* ```singularity  shell   -B /eos -B /afs  --nv docker://dologarcia/gatr:v0```
+
+Then do ```wandb login``` to set up your wandb account. You need to create and account and log in before you run this.
 
 ## Set up your environment
 
