@@ -27,6 +27,12 @@
     - [Performance consideration](#performance-consideration)
 
 <!-- /TOC -->
+## Set up your container
+
+Weaver can be used with a conda envirorment but using a container allows to speed up this process. Access the machine with gpus you will use for training and 
+* Create a .sif file: singularity pull docker://dologarcia/gatr:v0(optional) 
+* Export the cache: export APPTAINER_CACHEDIR=/mnt/proj1/dd-24-97/cache/
+* Then activate with the necessary binding like: singularity  shell -B /mnt/proj1/dd-24-97/ --nv colorsinglet.sif
 
 ## Set up your environment
 
