@@ -8,24 +8,24 @@ preprocess:
     pfcand_thetarel:
       length: 75
       pad_mode: wrap
-      center: 0.30628904700279236
-      scale: 1.6517757086846183
+      center: 0.34896841645240784
+      scale: 1.623847928023531
       min: -5
       max: 5
       pad_value: 0
     pfcand_phirel:
       length: 75
       pad_mode: wrap
-      center: 0.0007469759439118207
-      scale: 0.4692639801513128
+      center: 0.00031830096850171685
+      scale: 0.4692355255199169
       min: -5
       max: 5
       pad_value: 0
     pfcand_erel_log:
       length: 75
       pad_mode: wrap
-      center: -1.7774103283882141
-      scale: 1.6044914854595846
+      center: -1.8002910614013672
+      scale: 1.5911575382168794
       min: -5
       max: 5
       pad_value: 0
@@ -33,7 +33,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111111111023
+      scale: 0.11111111111111001
       min: -5
       max: 5
       pad_value: 0
@@ -41,7 +41,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111051839062
+      scale: 0.11111111039722958
       min: -5
       max: 5
       pad_value: 0
@@ -49,7 +49,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111108154586996
+      scale: 0.11111107873678364
       min: -5
       max: 5
       pad_value: 0
@@ -57,7 +57,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.1111062091405005
+      scale: 0.11110580581124187
       min: -5
       max: 5
       pad_value: 0
@@ -65,7 +65,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111070006817295
+      scale: 0.11111063977819315
       min: -5
       max: 5
       pad_value: 0
@@ -73,7 +73,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111105110298176
+      scale: 0.11111103621962409
       min: -5
       max: 5
       pad_value: 0
@@ -81,7 +81,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111118114238785
+      scale: 0.11111118663623733
       min: -5
       max: 5
       pad_value: 0
@@ -89,7 +89,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111196412055
+      scale: 0.11111111196002012
       min: -5
       max: 5
       pad_value: 0
@@ -97,7 +97,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111108513369
+      scale: 0.1111111110812715
       min: -5
       max: 5
       pad_value: 0
@@ -105,7 +105,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111113267336
+      scale: 0.11111111114037472
       min: -5
       max: 5
       pad_value: 0
@@ -113,7 +113,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111111114502
+      scale: 0.11111111111115293
       min: -5
       max: 5
       pad_value: 0
@@ -121,7 +121,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111110402805
+      scale: 0.11111111110696342
       min: -5
       max: 5
       pad_value: 0
@@ -129,7 +129,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111062803607
+      scale: 0.11111111049504692
       min: -5
       max: 5
       pad_value: 0
@@ -137,7 +137,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111111028796
+      scale: 0.11111111111018916
       min: -5
       max: 5
       pad_value: 0
@@ -145,15 +145,15 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11111111111112584
+      scale: 0.11111111111112591
       min: -5
       max: 5
       pad_value: 0
     pfcand_mtof:
       length: 75
       pad_mode: wrap
-      center: 0.041049301624298096
-      scale: 3.886545341975726
+      center: 0.07032066211104393
+      scale: 5.0446882868657825
       min: -5
       max: 5
       pad_value: 0
@@ -161,7 +161,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: 0.0
-      scale: 0.7178312251920987
+      scale: 0.7165380157879775
       min: -5
       max: 5
       pad_value: 0
@@ -217,7 +217,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11100271608472723
+      scale: 0.11104036349544703
       min: -5
       max: 5
       pad_value: 0
@@ -225,7 +225,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.1110722610109896
+      scale: 0.1110838280661911
       min: -5
       max: 5
       pad_value: 0
@@ -233,7 +233,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11086846439228325
+      scale: 0.11100882796219
       min: -5
       max: 5
       pad_value: 0
@@ -241,7 +241,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.0984972967741744
+      scale: 0.10339552523584994
       min: -5
       max: 5
       pad_value: 0
@@ -249,7 +249,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11090807053774998
+      scale: 0.11100379369461871
       min: -5
       max: 5
       pad_value: 0
@@ -257,7 +257,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.10074142164140595
+      scale: 0.10327416627313275
       min: -5
       max: 5
       pad_value: 0
@@ -265,7 +265,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.11104482170555859
+      scale: 0.11106689226469424
       min: -5
       max: 5
       pad_value: 0
@@ -273,7 +273,7 @@ preprocess:
       length: 75
       pad_mode: wrap
       center: -9.0
-      scale: 0.1068908347013553
+      scale: 0.10776558597370688
       min: -5
       max: 5
       pad_value: 0
@@ -383,7 +383,7 @@ labels:
   - recojet_isS
   - recojet_isC
   - recojet_isB
-  - recojet_isTau
+  - recojet_isTAU
   - recojet_isD
 observers: []
 monitor_variables: []
@@ -403,7 +403,7 @@ weights:
   - recojet_isS
   - recojet_isC
   - recojet_isB
-  - recojet_isTau
+  - recojet_isTAU
   - recojet_isD
   class_weights:
   - 1
@@ -413,4 +413,18 @@ weights:
   - 1
   - 1
   - 1
-  reweight_hists: null
+  reweight_hists:
+    recojet_isG:
+    - - 0.803920567035675
+    recojet_isU:
+    - - 0.7541366219520569
+    recojet_isS:
+    - - 0.802278459072113
+    recojet_isC:
+    - - 0.7855589985847473
+    recojet_isB:
+    - - 0.7855589985847473
+    recojet_isTAU:
+    - - 0.8999999761581421
+    recojet_isD:
+    - - 0.7541366219520569
