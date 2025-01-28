@@ -1,0 +1,100 @@
+treename: events
+selection:
+   ### use `&`, `|`, `~` for logical operations on numpy arrays
+   ### can use functions from `math`, `np` (numpy), and `awkward` in the expression
+   #(jet_tightId==1) & (jet_no<2) & (fj_pt>200) & (fj_pt<2500) & (((sample_isQCD==0) & (fj_isQCD==0)) | ((sample_isQCD==1) & (fj_isQCD==1))) & (event_no%7!=0)
+   #(recojet_e>=5)
+
+test_time_selection:
+   ### selection to apply at test time (i.e., when running w/ --predict)
+   #(jet_tightId==1) & (jet_no<2) & (fj_pt>200) & (fj_pt<2500) & (((sample_isQCD==0) & (fj_isQCD==0)) | ((sample_isQCD==1) & (fj_isQCD==1))) & (event_no%7==0)
+   #(recojet_e<5)
+
+new_variables:
+   pfcand_mask: ak.ones_like(pfcand_pt)
+
+preprocess:
+  ### method: [manual, auto] - whether to use manually specified parameters for variable standardization
+  ### [note]: `[var]_mask` will not be transformed even if `method=auto`
+  method: auto
+  ### data_fraction: fraction of events to use when calculating the mean/scale for the standardization
+  data_fraction: 0.1
+
+inputs:
+   pf_points:
+      pad_mode: wrap
+      length: 4
+      vars:
+         - pfcand_pt
+
+   pf_features:
+      pad_mode: wrap
+      length: 4
+      vars:
+         - pfcand_pt
+         - pfcand_eta
+         - pfcand_phi
+         - pfcand_mass
+         - pfcand_Sip3dSigSV
+         - pfcand_Sip2dSigSV
+         - pfcand_dxySV
+         - pfcand_dzSV
+         - pfcand_isMu
+         - pfcand_isChargedHad
+         - pfcand_isEl
+         - pfcand_isGamma
+         - pfcand_isNeutralHad
+         - pfcand_detadeta
+         - pfcand_dphidphi
+         - pfcand_dptdpt
+
+   pf_vectors:
+      length: 4
+      pad_mode: wrap
+      vars:
+         - pfcand_pt
+         - pfcand_pt
+         - pfcand_pt
+         - pfcand_pt
+
+   pf_mask:
+      length: 4
+      pad_mode: constant
+      vars:
+         - [pfcand_mask, null]
+
+
+labels:
+   ### type can be `simple`, `custom`
+  ### [option 1] use `simple` for binary/multi-class classification, then `value` is a list of 0-1 labels
+   type: simple
+   value: [
+      recojet_isSig, recojet_isB
+      ]
+
+observers:
+   #- recojet_e
+   #- recojet_theta
+   #- recojet_phi
+   #- recojet_m
+   #- n_pfcand
+
+weights:
+   ### [option 1] use precomputed weights stored in the input files
+   # use_precomputed_weights: true
+   # weight_branches: [w]
+   ### [option 2] compute weights on-the-fly using reweighting histograms
+   # use_precomputed_weights: false
+   # reweight_method: flat
+   # reweight_vars:
+   #    # pfcand_phi: [-10., 10.]
+   #    # pfcand_eta: [-10., 10.]
+   # reweight_classes: [
+   #    recojet_isSig,
+   #    recojet_isB
+   #    ]
+   # class_weights: [
+   #    1,
+   #    1
+   #    ]
+   # reweight_hists:
