@@ -1,5 +1,5 @@
 import torch
-from weaver.nn.model.GatedGCN import GatedGCNNet
+from weaver.nn.model.simpleMLP import GatedGCNNet
 
 
 class GatedGCNNetWrapper(torch.nn.Module):

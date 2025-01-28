@@ -242,7 +242,6 @@ class _SimpleIter(object):
         self._try_get_next(init=True)
 
     def __next__(self):
-        # print(self.ipos, self.cursor)
         if len(self.filelist) == 0:
             raise StopIteration
         try:
@@ -383,7 +382,7 @@ class SimpleIterDataset(torch.utils.data.IterableDataset):
         up_sample=True,
         weight_scale=1,
         max_resample=10,
-        async_load=True,
+        async_load=False,
         infinity_mode=False,
         in_memory=False,
         name="",

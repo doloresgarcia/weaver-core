@@ -7,7 +7,7 @@ from collections import defaultdict, Counter
 from .metrics import evaluate_metrics
 from ..data.tools import _concat
 from ..logger import _logger
-
+import wandb
 
 def _flatten_label(label, mask=None):
     if label.ndim > 1:
@@ -57,7 +57,9 @@ def train_classification(
     with tqdm.tqdm(train_loader) as tq:
         for X, y, _, y_check in tq:
             inputs = [X[k].to(dev) for k in data_config.input_names]
+            # print("example", num_batches)
             label = y[data_config.label_names[0]].long()
+            # print("label", torch.sum(label), torch.sum(label==0))
             label_check = y_check['_labelcheck_'].long().to(dev)
             try:
                 label_mask = y[data_config.label_names[0] + "_mask"].bool()
@@ -70,6 +72,7 @@ def train_classification(
             opt.zero_grad()
             with torch.cuda.amp.autocast(enabled=grad_scaler is not None):
                 model_output = model(*inputs)
+                # print( "model_output", model_output)    
                 logits = _flatten_preds(model_output, label_mask)
                 loss = loss_func1(logits, label,label_check)
             if grad_scaler is None:

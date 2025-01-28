@@ -172,7 +172,8 @@ def to_filelist(args, mode="train"):
 
     if args.local_rank is not None:
         if mode == "train":
-            local_world_size = 2  # int(os.environ["LOCAL_WORLD_SIZE"])
+            local_world_size = int(os.environ["LOCAL_WORLD_SIZE"])
+            print("local_world_size", local_world_size)
             new_file_dict = {}
             for name, files in file_dict.items():
                 new_files = files[args.local_rank :: local_world_size]
@@ -208,6 +209,7 @@ def to_filelist(args, mode="train"):
 
     filelist = sum(file_dict.values(), [])
     assert len(filelist) == len(set(filelist))
+    print("filelist", len(filelist))
     return file_dict, filelist
 
 
@@ -415,7 +417,7 @@ def onnx(args):
     data_config = DataConfig.load(
         args.data_config, load_observers=False, load_reweight_info=False
     )
-    model, model_info, _ = model_setup(args, data_config, dev=None)
+    model, model_info, _ = model_setup(args, data_config)
     model.load_state_dict(torch.load(model_path, map_location="cpu"))
     model = model.cpu()
     model.eval()

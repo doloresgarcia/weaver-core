@@ -25,6 +25,30 @@ from weaver.nn.model.layers.helper_graph_function import (
     create_dij_interactions,
 )
 
+def Energy_diff(src_field, dst_field, out_field):
+    def func(edges):
+        diff_E = torch.abs((edges.src["h"] - edges.dst["h"]))
+        
+        return {out_field: diff_E }
+
+    return func
+
+
+def create_graph(pf_points, pf_features, pf_vectors, mask, seq_len, device):
+    pf_points_g = torch.permute(torch.tensor(pf_points), (1, 0))
+    pf_features_g = torch.permute(torch.tensor(pf_features), (1, 0))
+    pf_vectors_g = torch.permute(torch.tensor(pf_vectors), (1, 0))
+    g = dgl.graph(([], []))
+    g.add_nodes(4)
+    i, j = torch.tril_indices(g.number_of_nodes()-1, g.number_of_nodes()-1)
+    g.add_edges(i,j)
+    g = dgl.to_simple(g) 
+    g = dgl.to_bidirected(g)
+    g =dgl.remove_self_loop(g)
+    g = g.to(device)
+    g.ndata["h"] = pf_features_g
+    g.apply_edges(Energy_diff("e", "e", "e"))
+    return g 
 
 def create_graph_knn(pf_points, pf_features, pf_vectors, mask, seq_len, device):
     # print(example[0].keys())
