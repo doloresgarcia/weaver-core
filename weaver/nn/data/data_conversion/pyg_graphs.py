@@ -1,7 +1,7 @@
 import torch
 import sys
 from functools import partial
-from torch_geometric.data import Data
+from torch_geometric.data import Data # torch geometric not in onnx env but need this for L-GATr
 import os.path as osp
 import time
 import numpy as np
@@ -37,7 +37,7 @@ def create_graph_gatr(example, input_var_names, master_node=False):
 
     y = torch.tensor(example[1]["_label_"]) # 7 classes
 
-    # add a global node to the graph that is fully connected and has trainable weights to represent the global state -> classification via this node
+    # add a node that represents the global state -> classification via this node
     master_node = True
     if master_node:
         #print("pf_features", pf_features.shape) # torch.Size([25, 33])

@@ -10,7 +10,7 @@ import math
 import torch
 
 from torch.utils.data import DataLoader
-from torch_geometric.loader import dataloader as DataLoader_tg
+#from torch_geometric.loader import dataloader as DataLoader_tg
 from weaver.utils.logger import _logger, _configLogger
 from weaver.utils.dataset import SimpleIterDataset
 from weaver.utils.import_tools import import_module
